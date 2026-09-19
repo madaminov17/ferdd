@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>FERDO — Agrotexnika va Logistika</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<style>
+  :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    background: #0f130d;
+  }
+  @keyframes ferdoFadeIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes ferdoSlideUp { from { transform: translateY(24px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+  @keyframes ferdoSheetUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
+  @keyframes ferdoBump { 0% { transform: scale(1) } 35% { transform: scale(1.06) } 100% { transform: scale(1) } }
+  @media (prefers-reduced-motion: reduce) {
+    .ferdo-anim, .ferdo-anim * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+  ::-webkit-scrollbar { width: 0px; height: 0px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo } = React;
+
+/* ---------------------------- Simple line icons ---------------------------- */
+function Icon({ name, size = 20, color = "currentColor", fill = "none", strokeWidth = 2, className = "" }) {
+  const common = { width: size, height: size, viewBox: "0 0 24 24", fill, stroke: color, strokeWidth, strokeLinecap: "round", strokeLinejoin: "round", className };
+  const paths = {
+    Tractor: <g {...common}><circle cx="7" cy="17" r="3"/><circle cx="18" cy="17" r="2.2"/><path d="M7 14V6h5l3 5h3.5a1.5 1.5 0 0 1 1.5 1.5V16"/><path d="M4 10h6"/></g>,
+    Truck: <g {...common}><rect x="1.5" y="7" width="12" height="9"/><path d="M13.5 10h4l3 3v3h-3"/><circle cx="6" cy="18.5" r="1.6"/><circle cx="16.5" cy="18.5" r="1.6"/></g>,
+    Warehouse: <g {...common}><path d="M3 9.5 12 4l9 5.5V19a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></g>,
+    MapPin: <g {...common}><path d="M12 22s7-7.1 7-12a7 7 0 1 0-14 0c0 4.9 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></g>,
+    Star: <path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17.5l-5.9 3 1.3-6.6-4.9-4.6 6.6-.7L12 2.5Z" fill={color} stroke="none"/>,
+    Phone: <path {...common} d="M4 4h4l1.5 5-2.2 1.6a12 12 0 0 0 6.1 6.1L15 14.5l5 1.5v4a2 2 0 0 1-2.2 2C9 21.5 2.5 15 2 6.2A2 2 0 0 1 4 4Z"/>,
+    X: <g {...common}><path d="M6 6l12 12M18 6L6 18"/></g>,
+    Check: <path {...common} d="M5 13l4 4L19 7"/>,
+    CheckCircle2: <g {...common}><circle cx="12" cy="12" r="9.5"/><path d="M8.5 12.3l2.4 2.4L16 9.5"/></g>,
+    ChevronRight: <path {...common} d="M9 6l6 6-6 6"/>,
+    Search: <g {...common}><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></g>,
+    Calendar: <g {...common}><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></g>,
+    Users: <g {...common}><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.2 5.2A3.2 3.2 0 0 1 17.5 11.4"/><path d="M15.5 14a6.5 6.5 0 0 1 6 6"/></g>,
+    Moon: <path {...common} d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5Z"/>,
+    Sun: <g {...common}><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.5 12h2.3M19.2 12h2.3M4.4 19.6l1.6-1.6M18 6l1.6-1.6"/></g>,
+    Sprout: <g {...common}><path d="M12 21V12"/><path d="M12 12C6.5 12 4 8.8 4 5c4.2 0 7 2 8 4"/><path d="M12 9c1-2 3.8-4 8-4 0 3.6-2.3 6.6-6.6 7"/></g>,
+    Gauge: <g {...common}><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13l3.5-4"/><circle cx="12" cy="13" r="1"/></g>,
+    PackageCheck: <g {...common}><path d="M3.5 8.5 12 4l8.5 4.5-8.5 4.5-8.5-4.5Z"/><path d="M3.5 8.5V16l8.5 4.5V13"/><path d="M20.5 8.5V13"/><path d="M16.5 17l1.6 1.6L21 15.5"/></g>,
+    Loader2: <path {...common} d="M12 3a9 9 0 1 0 9 9" className={"animate-spin " + className}/>,
+  };
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>{paths[name]}</svg>;
+}
+
+/* -------------------------------- Mock data -------------------------------- */
+const MACHINES = [
+  { id: "m1", name: "John Deere 8310R", type: "traktor", spec: "310 ot kuchi · Universal", pricePerDay: 850000, available: true },
+  { id: "m2", name: "Case IH 7250", type: "kombayn", spec: "Bunker hajmi 10.5 m³", pricePerDay: 1450000, available: true },
+  { id: "m3", name: "MTZ Belarus 892", type: "traktor", spec: "92 ot kuchi · Yengil ishlar", pricePerDay: 420000, available: true },
+  { id: "m4", name: "New Holland CR8.90", type: "kombayn", spec: "Yuqori unumdorlik · GPS", pricePerDay: 1680000, available: false },
+  { id: "m5", name: "Kirovets K-744", type: "traktor", spec: "428 ot kuchi · Og'ir tuproq", pricePerDay: 690000, available: true },
+];
+
+const DRIVER_POOL = [
+  { id: "d1", driverName: "Aziz Karimov", vehicleModel: "Isuzu Forward", rating: 4.8, ratingsCount: 126, phone: "+998 90 123 45 67", basePrice: 2200000, etaLabel: "Ertaga ertalab" },
+  { id: "d2", driverName: "Bahrom Yusupov", vehicleModel: "KamAZ 65115", rating: 4.6, ratingsCount: 84, phone: "+998 91 234 56 78", basePrice: 1950000, etaLabel: "Bugun kechqurun" },
+  { id: "d3", driverName: "Sardor Aliyev", vehicleModel: "MAN TGS", rating: 4.9, ratingsCount: 201, phone: "+998 93 345 67 89", basePrice: 2650000, etaLabel: "Ertaga, 10:00" },
+  { id: "d4", driverName: "Jasur Nematov", vehicleModel: "Howo Sinotruk", rating: 4.5, ratingsCount: 57, phone: "+998 94 456 78 90", basePrice: 1750000, etaLabel: "2 kun ichida" },
+];
+
+const INITIAL_WAREHOUSES = [
+  { id: "w1", name: "FERDO Sklad-1", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, totalCapacity: 500, freeCapacity: 150 },
+  { id: "w2", name: "Qibray agro-ombori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, totalCapacity: 300, freeCapacity: 80 },
+  { id: "w3", name: "Zangiota saqlash markazi", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, totalCapacity: 600, freeCapacity: 220 },
+  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40 },
+];
+
+const DRIVER_FEE_PER_DAY = 180000;
+function formatSum(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm"; }
+
+/* --------------------------------- Theming --------------------------------- */
+const LIGHT = { appBg: "bg-[#F6F4EC]", text: "text-[#1C2B22]", subtext: "text-[#69766B]", faint: "text-[#8B9690]", card: "bg-white", cardBorder: "border-[#E7E2D4]", inputBg: "bg-[#F0ECE0]", navBg: "bg-white/90", navBorder: "border-[#E7E2D4]", chip: "bg-[#EFEAD9]", divider: "border-[#EDE8DA]" };
+const DARK = { appBg: "bg-[#12170F]", text: "text-[#F2F3ED]", subtext: "text-[#9EAC9B]", faint: "text-[#71806E]", card: "bg-[#1A2117]", cardBorder: "border-[#2A3426]", inputBg: "bg-[#212B1D]", navBg: "bg-[#12170F]/92", navBorder: "border-[#2A3426]", chip: "bg-[#233020]", divider: "border-[#232D1F]" };
+
+const BRAND_GREEN = "#2E6B3E";
+const BRAND_GREEN_DARK = "#25552F";
+const BRAND_AMBER = "#E1A13B";
+const BRAND_SOIL = "#96693F";
+
+/* ------------------------------ Small elements ------------------------------ */
+function Toggle({ checked, onChange }) {
+  return (
+    <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)}
+      className="relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200"
+      style={{ backgroundColor: checked ? BRAND_GREEN : "#B9C2B4" }}>
+      <span className="absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-200"
+        style={{ transform: checked ? "translateX(22px)" : "translateX(2px)" }} />
+    </button>
+  );
+}
+
+function Stars({ rating }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: BRAND_AMBER }}>
+      <Icon name="Star" size={14} color={BRAND_AMBER} fill={BRAND_AMBER} />
+      {rating.toFixed(1)}
+    </span>
+  );
+}
+
+function SheetModal({ onClose, children, t }) {
+  return (
+    <div className="ferdo-anim fixed inset-0 z-50 flex items-end justify-center">
+      <div onClick={onClose} className="absolute inset-0 bg-black/45 backdrop-blur-[2px]" style={{ animation: "ferdoFadeIn 0.2s ease-out" }} />
+      <div className={`relative w-full max-w-md rounded-t-[28px] border-t ${t.cardBorder} ${t.card} px-5 pb-6 pt-3 max-h-[88vh] overflow-y-auto`}
+        style={{ animation: "ferdoSheetUp 0.28s cubic-bezier(0.22,1,0.36,1)" }}>
+        <div className={`mx-auto mb-3 h-1.5 w-10 rounded-full ${t.chip}`} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Toast({ message, t }) {
+  return (
+    <div className="ferdo-anim fixed left-1/2 top-4 z-[60] -translate-x-1/2" style={{ animation: "ferdoSlideUp 0.25s ease-out" }}>
+      <div className={`flex items-center gap-2 rounded-2xl border ${t.cardBorder} ${t.card} px-4 py-3 shadow-lg`}>
+        <Icon name="CheckCircle2" size={18} color={BRAND_GREEN} />
+        <span className={`text-sm font-medium ${t.text}`}>{message}</span>
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ title, subtitle, t }) {
+  return (
+    <div className="px-5 pb-4 pt-1">
+      <h1 className={`text-2xl font-bold ${t.text}`}>{title}</h1>
+      <p className={`mt-1 text-sm ${t.subtext}`}>{subtitle}</p>
+    </div>
+  );
+}
+
+function MachineVisual({ type, available }) {
+  const isTraktor = type === "traktor";
+  const gradient = isTraktor ? "linear-gradient(135deg, #3B7A48 0%, #2A5B36 100%)" : "linear-gradient(135deg, #D99A3D 0%, #B87B2A 100%)";
+  return (
+    <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-2xl" style={{ backgroundImage: gradient }}>
+      <div className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" />
+      <div className="absolute -bottom-8 -right-4 h-28 w-28 rounded-full bg-black/10" />
+      <Icon name="Tractor" size={54} color="white" strokeWidth={1.5} />
+      <span className="absolute left-3 top-3 rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">{isTraktor ? "Traktor" : "Kombayn"}</span>
+      {!available && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/45">
+          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#1C2B22]">Band qilingan</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* --------------------------------- Page 1 --------------------------------- */
+function RentalPage({ t, showToast }) {
+  const [selected, setSelected] = useState(null);
+  const [days, setDays] = useState(1);
+  const [withDriver, setWithDriver] = useState(false);
+  const [bump, setBump] = useState(false);
+
+  const total = useMemo(() => {
+    if (!selected) return 0;
+    return selected.pricePerDay * days + (withDriver ? DRIVER_FEE_PER_DAY * days : 0);
+  }, [selected, days, withDriver]);
+
+  useEffect(() => {
+    if (!selected) return;
+    setBump(true);
+    const tmr = window.setTimeout(() => setBump(false), 260);
+    return () => window.clearTimeout(tmr);
+  }, [total, selected]);
+
+  const openMachine = (m) => { if (!m.available) return; setSelected(m); setDays(1); setWithDriver(false); };
+
+  return (
+    <div>
+      <SectionHeader title="Texnika ijarasi" subtitle="Traktor va kombaynlarni kuniga ijaraga oling" t={t} />
+      <div className="grid grid-cols-1 gap-4 px-5 sm:grid-cols-2">
+        {MACHINES.map((m) => (
+          <button key={m.id} onClick={() => openMachine(m)}
+            className={`text-left rounded-2xl border ${t.cardBorder} ${t.card} p-3 transition-transform active:scale-[0.98] ${!m.available ? "opacity-70" : ""}`}>
+            <MachineVisual type={m.type} available={m.available} />
+            <div className="mt-3 flex items-start justify-between gap-2">
+              <div>
+                <h3 className={`text-base font-semibold ${t.text}`}>{m.name}</h3>
+                <p className={`mt-0.5 text-xs ${t.subtext}`}>{m.spec}</p>
+              </div>
+              <Icon name="ChevronRight" size={18} className={t.faint} />
+            </div>
+            <div className="mt-2 flex items-baseline gap-1">
+              <span className="text-lg font-bold" style={{ color: BRAND_GREEN }}>{formatSum(m.pricePerDay)}</span>
+              <span className={`text-xs ${t.faint}`}>/ kun</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {selected && (
+        <SheetModal t={t} onClose={() => setSelected(null)}>
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className={`text-xl font-bold ${t.text}`}>{selected.name}</h2>
+              <p className={`mt-0.5 text-sm ${t.subtext}`}>{selected.spec}</p>
+            </div>
+            <button onClick={() => setSelected(null)} className={`rounded-full p-1.5 ${t.chip}`} aria-label="Yopish"><Icon name="X" size={18} className={t.text} /></button>
+          </div>
+          <div className="mt-4"><MachineVisual type={selected.type} available={selected.available} /></div>
+          <div className="mt-5">
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha kunga olasiz?</label>
+            <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
+              <Icon name="Calendar" size={18} className={t.faint} />
+              <input type="number" min={1} value={days} onChange={(e) => setDays(Math.max(1, Number(e.target.value) || 1))}
+                className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
+              <span className={`text-sm ${t.faint}`}>kun</span>
+            </div>
+          </div>
+          <div className={`mt-4 flex items-center justify-between rounded-2xl border ${t.cardBorder} px-4 py-3`}>
+            <div className="flex items-center gap-2.5">
+              <Icon name="Users" size={18} className={t.faint} />
+              <div>
+                <p className={`text-sm font-medium ${t.text}`}>Haydovchi bilan</p>
+                <p className={`text-xs ${t.faint}`}>+{formatSum(DRIVER_FEE_PER_DAY)} / kun</p>
+              </div>
+            </div>
+            <Toggle checked={withDriver} onChange={setWithDriver} />
+          </div>
+          <div className={`mt-5 space-y-1.5 border-t ${t.divider} pt-4`}>
+            <div className={`flex items-center justify-between text-sm ${t.subtext}`}>
+              <span>Texnika ({days} kun × {formatSum(selected.pricePerDay)})</span>
+              <span>{formatSum(selected.pricePerDay * days)}</span>
+            </div>
+            {withDriver && (
+              <div className={`flex items-center justify-between text-sm ${t.subtext}`}>
+                <span>Haydovchi xizmati ({days} kun)</span>
+                <span>{formatSum(DRIVER_FEE_PER_DAY * days)}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between pt-1.5">
+              <span className={`text-sm font-medium ${t.text}`}>Jami narx</span>
+              <span className="text-xl font-extrabold" style={{ color: BRAND_GREEN, display: "inline-block", animation: bump ? "ferdoBump 0.26s ease-out" : undefined }}>{formatSum(total)}</span>
+            </div>
+          </div>
+          <button onClick={() => { showToast(`Buyurtma qabul qilindi — ${selected.name}, ${days} kun`); setSelected(null); }}
+            className="mt-5 w-full rounded-2xl py-3.5 text-center text-base font-semibold text-white transition-opacity active:opacity-90"
+            style={{ backgroundColor: BRAND_GREEN }}>Buyurtma berish</button>
+        </SheetModal>
+      )}
+    </div>
+  );
+}
+
+/* --------------------------------- Page 2 --------------------------------- */
+function LogisticsPage({ t, showToast }) {
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [weight, setWeight] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState(null);
+  const [contact, setContact] = useState(null);
+
+  const handleSearch = () => {
+    if (!from.trim() || !to.trim()) { showToast("Iltimos, «Qayerdan» va «Qayerga» maydonlarini to'ldiring"); return; }
+    setLoading(true); setResults(null);
+    const tonnage = Number(weight) || 1;
+    window.setTimeout(() => {
+      const priced = DRIVER_POOL.map((d) => ({ ...d, basePrice: Math.round((d.basePrice + tonnage * 15000) / 1000) * 1000 }));
+      setResults(priced); setLoading(false);
+    }, 650);
+  };
+
+  return (
+    <div>
+      <SectionHeader title="Logistika" subtitle="Yukingiz uchun eng yaqin haydovchini toping" t={t} />
+      <div className="px-5">
+        <div className={`space-y-3 rounded-2xl border ${t.cardBorder} ${t.card} p-4`}>
+          <div className={`flex items-center gap-3 rounded-xl ${t.inputBg} px-3.5 py-3`}>
+            <Icon name="MapPin" size={18} color={BRAND_GREEN} />
+            <input value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Qayerdan (masalan: Toshkent)" className={`w-full bg-transparent text-sm outline-none ${t.text}`} />
+          </div>
+          <div className={`flex items-center gap-3 rounded-xl ${t.inputBg} px-3.5 py-3`}>
+            <Icon name="MapPin" size={18} color={BRAND_AMBER} />
+            <input value={to} onChange={(e) => setTo(e.target.value)} placeholder="Qayerga (masalan: Andijon)" className={`w-full bg-transparent text-sm outline-none ${t.text}`} />
+          </div>
+          <div className={`flex items-center gap-3 rounded-xl ${t.inputBg} px-3.5 py-3`}>
+            <Icon name="PackageCheck" size={18} className={t.faint} />
+            <input value={weight} onChange={(e) => setWeight(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="Yuk vazni (tonna)" inputMode="decimal" className={`w-full bg-transparent text-sm outline-none ${t.text}`} />
+          </div>
+          <button onClick={handleSearch} disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
+            <Icon name="Loader2" size={17} className={loading ? "" : "hidden"} />
+            {!loading && <Icon name="Search" size={17} />}
+            {loading ? "Qidirilmoqda..." : "Qidirish"}
+          </button>
+        </div>
+      </div>
+      <div className="mt-5 px-5">
+        {loading && [0, 1, 2].map((i) => <div key={i} className={`mb-3 h-24 animate-pulse rounded-2xl border ${t.cardBorder} ${t.chip}`} />)}
+        {!loading && results && (
+          <div>
+            <p className={`mb-3 text-xs font-medium uppercase tracking-wide ${t.faint}`}>{results.length} ta haydovchi topildi</p>
+            <div className="space-y-3">
+              {results.map((d, i) => (
+                <div key={d.id} className={`ferdo-anim rounded-2xl border ${t.cardBorder} ${t.card} p-4`} style={{ animation: `ferdoSlideUp 0.35s ease-out both`, animationDelay: `${i * 70}ms` }}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: BRAND_SOIL + "22" }}>
+                        <Icon name="Truck" size={20} color={BRAND_SOIL} />
+                      </div>
+                      <div>
+                        <h3 className={`text-sm font-semibold ${t.text}`}>{d.vehicleModel}</h3>
+                        <p className={`text-xs ${t.subtext}`}>{d.driverName}</p>
+                      </div>
+                    </div>
+                    <Stars rating={d.rating} />
+                  </div>
+                  <div className={`mt-3 flex items-center justify-between border-t ${t.divider} pt-3`}>
+                    <div>
+                      <p className={`text-xs ${t.faint}`}>{d.etaLabel}</p>
+                      <p className="text-base font-bold" style={{ color: BRAND_GREEN }}>{formatSum(d.basePrice)}</p>
+                    </div>
+                    <button onClick={() => setContact(d)} className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN_DARK }}>Bog'lanish</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {!loading && !results && (
+          <div className={`rounded-2xl border border-dashed ${t.cardBorder} px-5 py-10 text-center`}>
+            <Icon name="Truck" size={28} className={`mx-auto ${t.faint}`} />
+            <p className={`mt-3 text-sm ${t.subtext}`}>Yo'nalishni kiritib qidiring — mos haydovchilar shu yerda chiqadi</p>
+          </div>
+        )}
+      </div>
+      {contact && (
+        <SheetModal t={t} onClose={() => setContact(null)}>
+          <div className="flex items-center justify-between">
+            <h2 className={`text-lg font-bold ${t.text}`}>{contact.driverName}</h2>
+            <button onClick={() => setContact(null)} className={`rounded-full p-1.5 ${t.chip}`}><Icon name="X" size={18} className={t.text} /></button>
+          </div>
+          <p className={`mt-1 text-sm ${t.subtext}`}>{contact.vehicleModel} · <Stars rating={contact.rating} /> ({contact.ratingsCount} baho)</p>
+          <div className={`mt-4 flex items-center gap-3 rounded-2xl ${t.inputBg} px-4 py-3.5`}>
+            <Icon name="Phone" size={18} color={BRAND_GREEN} />
+            <span className={`text-base font-semibold ${t.text}`}>{contact.phone}</span>
+          </div>
+          <a href={`tel:${contact.phone.replace(/\s/g, "")}`} onClick={() => showToast(`${contact.driverName} bilan bog'lanmoqda...`)}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
+            <Icon name="Phone" size={18} /> Qo'ng'iroq qilish
+          </a>
+        </SheetModal>
+      )}
+    </div>
+  );
+}
+
+/* --------------------------------- Page 3 --------------------------------- */
+function WarehousePage({ t, showToast }) {
+  const [warehouses, setWarehouses] = useState(INITIAL_WAREHOUSES);
+  const [target, setTarget] = useState(null);
+  const [tonnage, setTonnage] = useState(10);
+  const sorted = useMemo(() => [...warehouses].sort((a, b) => a.distanceKm - b.distanceKm), [warehouses]);
+
+  const openBooking = (w) => { setTarget(w); setTonnage(Math.min(10, w.freeCapacity)); };
+  const confirmBooking = () => {
+    if (!target) return;
+    setWarehouses((prev) => prev.map((w) => (w.id === target.id ? { ...w, freeCapacity: Math.max(0, w.freeCapacity - tonnage) } : w)));
+    showToast(`${target.name} — ${tonnage} tonnaga bron qilindi`);
+    setTarget(null);
+  };
+
+  return (
+    <div>
+      <SectionHeader title="Omborxona" subtitle="Sizga eng yaqin omborlar" t={t} />
+      <div className="space-y-3 px-5">
+        {sorted.map((w) => {
+          const pct = Math.round((w.freeCapacity / w.totalCapacity) * 100);
+          return (
+            <div key={w.id} className={`rounded-2xl border ${t.cardBorder} ${t.card} p-4`}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: BRAND_GREEN + "1F" }}>
+                    <Icon name="Warehouse" size={20} color={BRAND_GREEN} />
+                  </div>
+                  <div>
+                    <h3 className={`text-sm font-semibold ${t.text}`}>{w.name}</h3>
+                    <p className={`text-xs ${t.subtext}`}>{w.region}</p>
+                  </div>
+                </div>
+                <span className={`flex items-center gap-1 text-xs font-medium ${t.faint}`}><Icon name="MapPin" size={13} /> {w.distanceKm} km</span>
+              </div>
+              <div className="mt-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className={t.subtext}>Bo'sh joy</span>
+                  <span className={`font-semibold ${t.text}`}>{w.freeCapacity} / {w.totalCapacity} tonna</span>
+                </div>
+                <div className={`mt-1.5 h-2 w-full overflow-hidden rounded-full ${t.chip}`}>
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: pct < 25 ? BRAND_SOIL : BRAND_GREEN }} />
+                </div>
+              </div>
+              <button onClick={() => openBooking(w)} disabled={w.freeCapacity <= 0}
+                className="mt-3.5 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold text-white disabled:opacity-40 active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
+                <Icon name="Gauge" size={16} />{w.freeCapacity <= 0 ? "Joy yo'q" : "Bron qilish"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      {target && (
+        <SheetModal t={t} onClose={() => setTarget(null)}>
+          <div className="flex items-center justify-between">
+            <h2 className={`text-lg font-bold ${t.text}`}>{target.name}</h2>
+            <button onClick={() => setTarget(null)} className={`rounded-full p-1.5 ${t.chip}`}><Icon name="X" size={18} className={t.text} /></button>
+          </div>
+          <p className={`mt-1 text-sm ${t.subtext}`}>{target.region} · {target.distanceKm} km</p>
+          <div className="mt-4">
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha tonna joy bron qilasiz?</label>
+            <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
+              <input type="number" min={1} max={target.freeCapacity} value={tonnage}
+                onChange={(e) => setTonnage(Math.max(1, Math.min(target.freeCapacity, Number(e.target.value) || 1)))}
+                className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
+              <span className={`text-sm ${t.faint}`}>tonna / {target.freeCapacity} bo'sh</span>
+            </div>
+          </div>
+          <button onClick={confirmBooking} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
+            <Icon name="Check" size={18} /> Bronni tasdiqlash
+          </button>
+        </SheetModal>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------- Bottom nav -------------------------------- */
+function BottomNav({ tab, setTab, t }) {
+  const items = [
+    { id: "rental", label: "Texnika", icon: "Tractor" },
+    { id: "logistics", label: "Logistika", icon: "Truck" },
+    { id: "warehouse", label: "Ombor", icon: "Warehouse" },
+  ];
+  return (
+    <nav className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-md items-center justify-around border-t ${t.navBorder} ${t.navBg} px-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-2 backdrop-blur-md`}>
+      {items.map((item) => {
+        const active = tab === item.id;
+        return (
+          <button key={item.id} onClick={() => setTab(item.id)} className="flex flex-1 flex-col items-center gap-1 rounded-2xl py-1.5 transition-colors">
+            <span className="flex h-9 w-14 items-center justify-center rounded-full transition-colors" style={{ backgroundColor: active ? BRAND_GREEN : "transparent", color: active ? "white" : undefined }}>
+              <Icon name={item.icon} size={20} className={active ? "" : t.faint} />
+            </span>
+            <span className={`text-[11px] font-medium ${active ? "" : t.faint}`} style={active ? { color: BRAND_GREEN } : undefined}>{item.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+function TopBar({ dark, setDark, t }) {
+  return (
+    <div className={`sticky top-0 z-30 flex items-center justify-between border-b ${t.navBorder} ${t.navBg} px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+12px)] backdrop-blur-md`}>
+      <div className="flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl text-white" style={{ backgroundColor: BRAND_GREEN }}><Icon name="Sprout" size={17} /></span>
+        <span className={`text-base font-extrabold tracking-tight ${t.text}`}>FERDO</span>
+      </div>
+      <button onClick={() => setDark(!dark)} className={`flex h-8 w-8 items-center justify-center rounded-full ${t.chip}`} aria-label="Mavzuni almashtirish">
+        <Icon name={dark ? "Sun" : "Moon"} size={16} className={t.text} />
+      </button>
+    </div>
+  );
+}
+
+function FerdoApp() {
+  const [dark, setDark] = useState(false);
+  const [tab, setTab] = useState("rental");
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      setDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }, []);
+
+  const showToast = (msg) => { setToast(msg); window.setTimeout(() => setToast(null), 2600); };
+  const t = dark ? DARK : LIGHT;
+
+  return (
+    <div className={`mx-auto min-h-screen w-full max-w-md ${t.appBg} sm:my-4 sm:min-h-[812px] sm:rounded-[36px] sm:border sm:${t.cardBorder} sm:shadow-2xl`}>
+      <TopBar dark={dark} setDark={setDark} t={t} />
+      <main className="pb-28 pt-2">
+        {tab === "rental" && <RentalPage t={t} showToast={showToast} />}
+        {tab === "logistics" && <LogisticsPage t={t} showToast={showToast} />}
+        {tab === "warehouse" && <WarehousePage t={t} showToast={showToast} />}
+      </main>
+      <BottomNav tab={tab} setTab={setTab} t={t} />
+      {toast && <Toast message={toast} t={t} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<FerdoApp />);
+</script>
+</body>
+</html>
