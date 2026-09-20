@@ -62,47 +62,62 @@ function Icon({ name, size = 20, color = "currentColor", className = "" }) {
 }
 
 /* -------------------------------- Mock data -------------------------------- */
+/* Wikimedia Commons rasmlari (aniq model/bino nomi bilan). Litsenziya: CC BY-SA / PD — pastdagi "Rasm manbalari"ga qarang. */
+const commons = (file, w = 800) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file.replace(/ /g, "_"))}?width=${w}`;
+const unsplash = (id, w = 800) => `https://unsplash.com/photos/${id}/download?force=true&w=${w}`;
+
 /* RASM QO'SHISH: har bir elementga  photo: "https://..."  yoki data:image/... qo'ying.
    photo bo'sh bo'lsa (yoki yuklanmasa) — o'sha elementning o'z rasmi (illyustratsiya) ko'rsatiladi. */
 const MACHINES = [
-  { id: "m1", name: "John Deere 8310R", type: "traktor", spec: "310 ot kuchi · Universal", pricePerDay: 850000, available: true, photo: "https://unsplash.com/photos/uzxr-c4UxQg/download?force=true&w=800",
+  { id: "m1", name: "John Deere 8310R", type: "traktor", spec: "310 ot kuchi · Universal", pricePerDay: 850000, available: true, photo: unsplash("uzxr-c4UxQg"),
     art: { body: "#3F8F3E", light: "#57A653", cab: "#2B6B35", rim: "#F2D24B", stripe: "#F2D24B", rear: 34, front: 18, dual: true, beacon: true, sky: "linear-gradient(180deg,#F8E9C6 0%,#E8D39A 100%)" } },
-  { id: "m2", name: "Case IH 7250", type: "kombayn", spec: "Bunker hajmi 10.5 m³", pricePerDay: 1450000, available: true, photo: "https://unsplash.com/photos/zmCvkXfV8dY/download?force=true&w=800",
+  { id: "m2", name: "Case IH 7250", type: "kombayn", spec: "Bunker hajmi 10.5 m³", pricePerDay: 1450000, available: true, photo: unsplash("zmCvkXfV8dY"),
     art: { body: "#C62F2F", light: "#DA4A45", header: "#B12626", reel: "#8E1D1D", bunker: "#A82424", cab: "#7A1818", rim: "#EEE9DF", gps: true, pipe: true, big: 27, sky: "linear-gradient(180deg,#F6D9C8 0%,#EBBE9E 100%)" } },
-  { id: "m3", name: "MTZ Belarus 892", type: "traktor", spec: "92 ot kuchi · Yengil ishlar", pricePerDay: 420000, available: true, photo: "https://unsplash.com/photos/y1VpCRx6KFM/download?force=true&w=800",
+  { id: "m3", name: "MTZ Belarus 892", type: "traktor", spec: "92 ot kuchi · Yengil ishlar", pricePerDay: 420000, available: true, photo: unsplash("y1VpCRx6KFM"),
     art: { body: "#2F6FB0", light: "#4A88C7", cab: "#1F4E82", rim: "#D7DDE3", rear: 27, front: 16, sky: "linear-gradient(180deg,#D4E6F5 0%,#B5D0E8 100%)" } },
-  { id: "m4", name: "New Holland CR8.90", type: "kombayn", spec: "Yuqori unumdorlik · GPS", pricePerDay: 1680000, available: false, photo: "https://unsplash.com/photos/5rKyHGdcKaA/download?force=true&w=800",
+  { id: "m4", name: "New Holland CR8.90", type: "kombayn", spec: "Yuqori unumdorlik · GPS", pricePerDay: 1680000, available: false, photo: unsplash("5rKyHGdcKaA"),
     art: { body: "#F2C230", light: "#F7D25E", header: "#1F4E82", reel: "#163A61", bunker: "#D9A51E", cab: "#1F4E82", rim: "#EEE9DF", gps: true, pipe: true, big: 29, sky: "linear-gradient(180deg,#F5EFC8 0%,#E6DC9E 100%)" } },
-  { id: "m5", name: "Kirovets K-744", type: "traktor", spec: "428 ot kuchi · Og'ir tuproq", pricePerDay: 690000, available: true, photo: "https://unsplash.com/photos/KkKBxcap7hs/download?force=true&w=800",
+  { id: "m5", name: "Kirovets K-744", type: "traktor", spec: "428 ot kuchi · Og'ir tuproq", pricePerDay: 690000, available: true, photo: unsplash("KkKBxcap7hs"),
     art: { body: "#D86A2B", light: "#E88445", cab: "#8A3F17", rim: "#2E2E2A", stripe: "#2A2A26", rear: 38, front: 20, dual: true, sky: "linear-gradient(180deg,#EED8C4 0%,#DDB995 100%)" } },
 ];
 
 const DRIVER_POOL = [
-  { id: "d1", driverName: "Aziz Karimov", vehicleModel: "Isuzu Forward", rating: 4.8, ratingsCount: 126, phone: "+998 90 123 45 67", basePrice: 2200000, etaLabel: "Ertaga ertalab", photo: "https://unsplash.com/photos/HhlApcVri0g/download?force=true&w=800",
-    art: { kind: "box", body: "#EEF2F5", light: "#FFFFFF", cab: "#2F6FB0", sky: "linear-gradient(180deg,#D4E6F5,#B5D0E8)" } },
-  { id: "d2", driverName: "Bahrom Yusupov", vehicleModel: "KamAZ 65115", rating: 4.6, ratingsCount: 84, phone: "+998 91 234 56 78", basePrice: 1950000, etaLabel: "Bugun kechqurun", photo: "https://unsplash.com/photos/peVKQQ2w-lg/download?force=true&w=800",
-    art: { kind: "dump", body: "#D98A2B", light: "#E9A54B", cab: "#2E7D6B", exhaust: true, sky: "linear-gradient(180deg,#F6E3C4,#E8C892)" } },
-  { id: "d3", driverName: "Sardor Aliyev", vehicleModel: "MAN TGS", rating: 4.9, ratingsCount: 201, phone: "+998 93 345 67 89", basePrice: 2650000, etaLabel: "Ertaga, 10:00", photo: "https://unsplash.com/photos/C-y-iAXoY_M/download?force=true&w=800",
+  { id: "d1", driverName: "Aziz Karimov", vehicleModel: "MAN TGX 18.500", vehicleType: "Fura · 20 tonna, tent/sovutgich", rating: 4.8, ratingsCount: 126, phone: "+998 90 123 45 67", basePrice: 2650000, etaLabel: "Ertaga ertalab",
+    photo: commons("MAN TGX 18.500 (Westerstede, 2022).jpg"),
     art: { kind: "semi", body: "#F2F2EE", stripe: "#C62F2F", cab: "#B8232F", sky: "linear-gradient(180deg,#F3D9D6,#E4B8B3)" } },
-  { id: "d4", driverName: "Jasur Nematov", vehicleModel: "Howo Sinotruk", rating: 4.5, ratingsCount: 57, phone: "+998 94 456 78 90", basePrice: 1750000, etaLabel: "2 kun ichida", photo: "https://unsplash.com/photos/CY4ce8XOLHo/download?force=true&w=800",
-    art: { kind: "tanker", body: "#5E9BB3", light: "#82B9CD", stripe: "#2A2A26", cab: "#3B7A48", exhaust: true, sky: "linear-gradient(180deg,#DCEBE0,#BFD8C7)" } },
+  { id: "d2", driverName: "Bahrom Yusupov", vehicleModel: "KamAZ 65115", vehicleType: "Samosval · 15 tonna, don va qurilish yuki", rating: 4.6, ratingsCount: 84, phone: "+998 91 234 56 78", basePrice: 1950000, etaLabel: "Bugun kechqurun",
+    photo: commons("Kamaz-65115.jpg"),
+    art: { kind: "dump", body: "#D98A2B", light: "#E9A54B", cab: "#2E7D6B", exhaust: true, sky: "linear-gradient(180deg,#F6E3C4,#E8C892)" } },
+  { id: "d3", driverName: "Sardor Aliyev", vehicleModel: "Volvo FH 440", vehicleType: "Refrizherator fura · meva-sabzavot, 22 tonna", rating: 4.9, ratingsCount: 201, phone: "+998 93 345 67 89", basePrice: 2900000, etaLabel: "Ertaga, 10:00",
+    photo: commons("Volvo fh 440.jpg"),
+    art: { kind: "semi", body: "#F4F7FA", stripe: "#3A82C4", cab: "#EDEFF2", sky: "linear-gradient(180deg,#DCEAF4,#BFD6E6)" } },
+  { id: "d4", driverName: "Jasur Nematov", vehicleModel: "Isuzu Forward FTR", vehicleType: "Yuk mashinasi · 8 tonna, bort + kran", rating: 4.5, ratingsCount: 57, phone: "+998 94 456 78 90", basePrice: 1750000, etaLabel: "2 kun ichida",
+    photo: commons("Isuzu Forward FTR Dropside Cargo and Crane Truck 2008.jpg"),
+    art: { kind: "box", body: "#EEF2F5", light: "#FFFFFF", cab: "#2F6FB0", sky: "linear-gradient(180deg,#D4E6F5,#B5D0E8)" } },
+  { id: "d5", driverName: "Otabek Rahimov", vehicleModel: "MAN TGS 33.460", vehicleType: "Samosval-tirkama · 25 tonna, don va shag'al", rating: 4.7, ratingsCount: 93, phone: "+998 97 567 89 01", basePrice: 2300000, etaLabel: "Ertaga kechqurun",
+    photo: commons("MAN TGS 33.460 with Trailer Dumper.jpg"),
+    art: { kind: "dump", body: "#2F6FB0", light: "#4A88C7", cab: "#B8232F", exhaust: true, sky: "linear-gradient(180deg,#F1E6CC,#E3D2A6)" } },
 ];
 
 const INITIAL_WAREHOUSES = [
-  { id: "w1", name: "FERDO Sklad-1", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, totalCapacity: 500, freeCapacity: 150, photo: "https://unsplash.com/photos/dFFNBl1P56k/download?force=true&w=800",
+  { id: "w1", name: "Sergeli logistika ombori", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, totalCapacity: 500, freeCapacity: 150,
+    photo: commons("Beijing Xijiao Food Cold Storage Plant (20210408170320).jpg"),
     art: { kind: "hangar", roof: "#96693F", light: "#B4834F", wall: "#3B7A48", accent: "#E1A13B" } },
-  { id: "w2", name: "Qibray agro-ombori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, totalCapacity: 300, freeCapacity: 80, photo: "https://unsplash.com/photos/48dja6XvEGI/download?force=true&w=800",
+  { id: "w2", name: "Qibray don elevatori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, totalCapacity: 300, freeCapacity: 80,
+    photo: commons("Cargill AgHorizons Grain Elevator-silos, Madison, MN.jpg"),
     art: { kind: "silo", roof: "#7A5636", wall: "#C9A66B", silo: "#D9DDD6", light: "#F1F3EE", sky: "linear-gradient(180deg,#F1E6CC,#E3D2A6)" } },
-  { id: "w3", name: "Zangiota saqlash markazi", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, totalCapacity: 600, freeCapacity: 220, photo: "",
+  { id: "w3", name: "Zangiota sovutgichli ombori", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, totalCapacity: 600, freeCapacity: 220,
+    photo: commons("JA Saga South Refrigerated rice storage warehouses.jpg"),
     art: { kind: "cold", roof: "#9FB3C0", wall: "#EAF1F5", accent: "#3A82C4", sky: "linear-gradient(180deg,#DCEAF4,#BFD6E6)" } },
-  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40, photo: "https://unsplash.com/photos/InqUEubyjBM/download?force=true&w=800",
+  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40,
+    photo: commons("Grain elevator, Grove City, Minnesota-8.jpg"),
     art: { kind: "grain", roof: "#5C4230", wall: "#8F6A4A", silo: "#C7B58F", accent: "#E1A13B", sky: "linear-gradient(180deg,#F4E2B8,#E6C980)" } },
 ];
 
 const INITIAL_HISTORY = [
   { id: "h1", type: "rental", title: "MTZ Belarus 892", subtitle: "5 kunga ijara · haydovchisiz", amount: 2100000, when: "3 kun oldin", status: "Yakunlangan" },
-  { id: "h2", type: "logistics", title: "Isuzu Forward — Aziz Karimov", subtitle: "Toshkent → Andijon, 8 tonna", amount: 2320000, when: "5 kun oldin", status: "Yakunlangan" },
-  { id: "h3", type: "warehouse", title: "Qibray agro-ombori", subtitle: "20 tonna joy bron qilindi", when: "1 hafta oldin", status: "Kutilmoqda" },
+  { id: "h2", type: "logistics", title: "MAN TGX 18.500 — Aziz Karimov", subtitle: "Toshkent → Andijon, 8 tonna", amount: 2320000, when: "5 kun oldin", status: "Yakunlangan" },
+  { id: "h3", type: "warehouse", title: "Qibray don elevatori", subtitle: "20 tonna joy bron qilindi", when: "1 hafta oldin", status: "Kutilmoqda" },
 ];
 
 const DRIVER_FEE_PER_DAY = 180000;
@@ -502,6 +517,7 @@ function LogisticsPage({ t, showToast, addHistory }) {
                       <div>
                         <h3 className={`text-sm font-semibold ${t.text}`}>{d.vehicleModel}</h3>
                         <p className={`text-xs ${t.subtext}`}>{d.driverName}</p>
+                        <p className={`mt-0.5 text-[11px] ${t.faint}`}>{d.vehicleType}</p>
                       </div>
                     </div>
                     <Stars rating={d.rating} />
@@ -785,6 +801,7 @@ function FerdoApp() {
         {tab === "warehouse" && <WarehousePage t={t} showToast={showToast} addHistory={addHistory} />}
         {tab === "history" && <HistoryPage t={t} history={history} />}
       </main>
+      <p className={`px-5 pb-4 text-[10px] leading-snug ${t.faint}`}>Rasm manbalari: Wikimedia Commons (CC BY-SA / ochiq litsenziyalar) va Unsplash.</p>
       <BottomNav tab={tab} setTab={setTab} t={t} />
       {toast && <Toast message={toast} t={t} />}
     </div>
