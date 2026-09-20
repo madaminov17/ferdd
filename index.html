@@ -33,30 +33,32 @@
 const { useState, useEffect, useMemo } = React;
 
 /* ---------------------------- Simple line icons ---------------------------- */
-function Icon({ name, size = 20, color = "currentColor", fill = "none", strokeWidth = 2, className = "" }) {
-  const common = { width: size, height: size, viewBox: "0 0 24 24", fill, stroke: color, strokeWidth, strokeLinecap: "round", strokeLinejoin: "round", className };
+function Icon({ name, size = 20, color = "currentColor", className = "" }) {
   const paths = {
-    Tractor: <g {...common}><circle cx="7" cy="17" r="3"/><circle cx="18" cy="17" r="2.2"/><path d="M7 14V6h5l3 5h3.5a1.5 1.5 0 0 1 1.5 1.5V16"/><path d="M4 10h6"/></g>,
-    Truck: <g {...common}><rect x="1.5" y="7" width="12" height="9"/><path d="M13.5 10h4l3 3v3h-3"/><circle cx="6" cy="18.5" r="1.6"/><circle cx="16.5" cy="18.5" r="1.6"/></g>,
-    Warehouse: <g {...common}><path d="M3 9.5 12 4l9 5.5V19a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></g>,
-    MapPin: <g {...common}><path d="M12 22s7-7.1 7-12a7 7 0 1 0-14 0c0 4.9 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></g>,
+    Tractor: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><circle cx="7" cy="17" r="3"/><circle cx="18" cy="17" r="2.2"/><path d="M7 14V6h5l3 5h3.5a1.5 1.5 0 0 1 1.5 1.5V16"/><path d="M4 10h6"/></g>,
+    Truck: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><rect x="1.5" y="7" width="12" height="9"/><path d="M13.5 10h4l3 3v3h-3"/><circle cx="6" cy="18.5" r="1.6"/><circle cx="16.5" cy="18.5" r="1.6"/></g>,
+    Warehouse: <path stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M3 9.5 12 4l9 5.5V19a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/>,
+    MapPin: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><path d="M12 22s7-7.1 7-12a7 7 0 1 0-14 0c0 4.9 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></g>,
     Star: <path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17.5l-5.9 3 1.3-6.6-4.9-4.6 6.6-.7L12 2.5Z" fill={color} stroke="none"/>,
-    Phone: <path {...common} d="M4 4h4l1.5 5-2.2 1.6a12 12 0 0 0 6.1 6.1L15 14.5l5 1.5v4a2 2 0 0 1-2.2 2C9 21.5 2.5 15 2 6.2A2 2 0 0 1 4 4Z"/>,
-    X: <g {...common}><path d="M6 6l12 12M18 6L6 18"/></g>,
-    Check: <path {...common} d="M5 13l4 4L19 7"/>,
-    CheckCircle2: <g {...common}><circle cx="12" cy="12" r="9.5"/><path d="M8.5 12.3l2.4 2.4L16 9.5"/></g>,
-    ChevronRight: <path {...common} d="M9 6l6 6-6 6"/>,
-    Search: <g {...common}><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></g>,
-    Calendar: <g {...common}><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></g>,
-    Users: <g {...common}><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.2 5.2A3.2 3.2 0 0 1 17.5 11.4"/><path d="M15.5 14a6.5 6.5 0 0 1 6 6"/></g>,
-    Moon: <path {...common} d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5Z"/>,
-    Sun: <g {...common}><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.5 12h2.3M19.2 12h2.3M4.4 19.6l1.6-1.6M18 6l1.6-1.6"/></g>,
-    Sprout: <g {...common}><path d="M12 21V12"/><path d="M12 12C6.5 12 4 8.8 4 5c4.2 0 7 2 8 4"/><path d="M12 9c1-2 3.8-4 8-4 0 3.6-2.3 6.6-6.6 7"/></g>,
-    Gauge: <g {...common}><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13l3.5-4"/><circle cx="12" cy="13" r="1"/></g>,
-    PackageCheck: <g {...common}><path d="M3.5 8.5 12 4l8.5 4.5-8.5 4.5-8.5-4.5Z"/><path d="M3.5 8.5V16l8.5 4.5V13"/><path d="M20.5 8.5V13"/><path d="M16.5 17l1.6 1.6L21 15.5"/></g>,
-    Loader2: <path {...common} d="M12 3a9 9 0 1 0 9 9" className={"animate-spin " + className}/>,
+    Phone: <path stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M4 4h4l1.5 5-2.2 1.6a12 12 0 0 0 6.1 6.1L15 14.5l5 1.5v4a2 2 0 0 1-2.2 2C9 21.5 2.5 15 2 6.2A2 2 0 0 1 4 4Z"/>,
+    X: <g stroke={color} strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18"/></g>,
+    Check: <path stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M5 13l4 4L19 7"/>,
+    CheckCircle2: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><circle cx="12" cy="12" r="9.5"/><path d="M8.5 12.3l2.4 2.4L16 9.5"/></g>,
+    ChevronRight: <path stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M9 6l6 6-6 6"/>,
+    Search: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></g>,
+    Calendar: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></g>,
+    Users: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.2 5.2A3.2 3.2 0 0 1 17.5 11.4"/><path d="M15.5 14a6.5 6.5 0 0 1 6 6"/></g>,
+    Moon: <path stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5Z"/>,
+    Sun: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.3M12 19.2v2.3M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.5 12h2.3M19.2 12h2.3M4.4 19.6l1.6-1.6M18 6l1.6-1.6"/></g>,
+    Sprout: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><path d="M12 21V12"/><path d="M12 12C6.5 12 4 8.8 4 5c4.2 0 7 2 8 4"/><path d="M12 9c1-2 3.8-4 8-4 0 3.6-2.3 6.6-6.6 7"/></g>,
+    Gauge: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13l3.5-4"/><circle cx="12" cy="13" r="1"/></g>,
+    PackageCheck: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><path d="M3.5 8.5 12 4l8.5 4.5-8.5 4.5-8.5-4.5Z"/><path d="M3.5 8.5V16l8.5 4.5V13"/><path d="M20.5 8.5V13"/><path d="M16.5 17l1.6 1.6L21 15.5"/></g>,
+    Loader2: <path stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M12 3a9 9 0 1 0 9 9"/>,
+    History: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/><path d="M12 8v4l3 2"/></g>,
+    Clock3: <g stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></g>,
   };
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>{paths[name]}</svg>;
+  const isSpin = name === "Loader2";
+  return <svg width={size} height={size} viewBox="0 0 24 24" className={className + (isSpin ? " animate-spin" : "")}>{paths[name]}</svg>;
 }
 
 /* -------------------------------- Mock data -------------------------------- */
@@ -82,6 +84,12 @@ const INITIAL_WAREHOUSES = [
   { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40 },
 ];
 
+const INITIAL_HISTORY = [
+  { id: "h1", type: "rental", title: "MTZ Belarus 892", subtitle: "5 kunga ijara · haydovchisiz", amount: 2100000, when: "3 kun oldin", status: "Yakunlangan" },
+  { id: "h2", type: "logistics", title: "Isuzu Forward — Aziz Karimov", subtitle: "Toshkent → Andijon, 8 tonna", amount: 2320000, when: "5 kun oldin", status: "Yakunlangan" },
+  { id: "h3", type: "warehouse", title: "Qibray agro-ombori", subtitle: "20 tonna joy bron qilindi", when: "1 hafta oldin", status: "Kutilmoqda" },
+];
+
 const DRIVER_FEE_PER_DAY = 180000;
 function formatSum(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm"; }
 
@@ -94,14 +102,22 @@ const BRAND_GREEN_DARK = "#25552F";
 const BRAND_AMBER = "#E1A13B";
 const BRAND_SOIL = "#96693F";
 
+const IMG_TRACTOR = "https://images.unsplash.com/photo-1750987661701-428e0d4201fe?auto=format&fit=crop&w=800&q=70";
+const IMG_COMBINE = "https://images.unsplash.com/photo-1751787838727-375a59537d32?auto=format&fit=crop&w=800&q=70";
+const IMG_TRUCK = "https://images.unsplash.com/photo-1586037856547-c2a6dc6f4380?auto=format&fit=crop&w=400&q=70";
+const WAREHOUSE_IMAGES = {
+  w1: "https://images.unsplash.com/photo-1684695749267-233af13276d0?auto=format&fit=crop&w=800&q=70",
+  w2: "https://images.unsplash.com/photo-1669003750652-2027bd69e7a1?auto=format&fit=crop&w=800&q=70",
+  w3: "https://images.unsplash.com/photo-1721937718756-3bfec49f42a2?auto=format&fit=crop&w=800&q=70",
+  w4: "https://images.unsplash.com/photo-1627630534997-e2e8f4937782?auto=format&fit=crop&w=800&q=70",
+};
+
 /* ------------------------------ Small elements ------------------------------ */
 function Toggle({ checked, onChange }) {
   return (
     <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)}
-      className="relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200"
-      style={{ backgroundColor: checked ? BRAND_GREEN : "#B9C2B4" }}>
-      <span className="absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-200"
-        style={{ transform: checked ? "translateX(22px)" : "translateX(2px)" }} />
+      style={{ position: "relative", display: "inline-flex", alignItems: "center", flexShrink: 0, width: 48, height: 28, borderRadius: 9999, border: "none", padding: 0, cursor: "pointer", transition: "background-color 0.2s ease", backgroundColor: checked ? BRAND_GREEN : "#B9C2B4" }}>
+      <span style={{ position: "absolute", top: 2, left: 2, width: 24, height: 24, borderRadius: 9999, backgroundColor: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.25)", transition: "transform 0.2s ease", transform: checked ? "translateX(20px)" : "translateX(0px)" }} />
     </button>
   );
 }
@@ -109,7 +125,7 @@ function Toggle({ checked, onChange }) {
 function Stars({ rating }) {
   return (
     <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: BRAND_AMBER }}>
-      <Icon name="Star" size={14} color={BRAND_AMBER} fill={BRAND_AMBER} />
+      <Icon name="Star" size={14} color={BRAND_AMBER} />
       {rating.toFixed(1)}
     </span>
   );
@@ -148,16 +164,83 @@ function SectionHeader({ title, subtitle, t }) {
   );
 }
 
-function MachineVisual({ type, available }) {
-  const isTraktor = type === "traktor";
-  const gradient = isTraktor ? "linear-gradient(135deg, #3B7A48 0%, #2A5B36 100%)" : "linear-gradient(135deg, #D99A3D 0%, #B87B2A 100%)";
+/* ------------------------------ SVG illustrations ---------------------------- */
+function TractorArt() {
   return (
-    <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-2xl" style={{ backgroundImage: gradient }}>
-      <div className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" />
-      <div className="absolute -bottom-8 -right-4 h-28 w-28 rounded-full bg-black/10" />
-      <Icon name="Tractor" size={54} color="white" strokeWidth={1.5} />
-      <span className="absolute left-3 top-3 rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">{isTraktor ? "Traktor" : "Kombayn"}</span>
-      {!available && (
+    <svg viewBox="0 0 220 140" className="h-full w-full">
+      <ellipse cx="110" cy="120" rx="95" ry="8" fill="rgba(0,0,0,0.15)" />
+      <rect x="58" y="88" width="112" height="8" rx="3" fill="#1c241a" />
+      <circle cx="158" cy="98" r="32" fill="#1a1f17" />
+      <circle cx="158" cy="98" r="32" fill="none" stroke="#000" strokeOpacity="0.25" strokeWidth="3" />
+      <circle cx="158" cy="98" r="15" fill="#EDEAE0" />
+      <circle cx="158" cy="98" r="5" fill="#3a3a34" />
+      <circle cx="66" cy="106" r="18" fill="#1a1f17" />
+      <circle cx="66" cy="106" r="8" fill="#EDEAE0" />
+      <circle cx="66" cy="106" r="3" fill="#3a3a34" />
+      <rect x="40" y="62" width="80" height="30" rx="7" fill="#3B7A48" />
+      <rect x="40" y="62" width="80" height="9" rx="4" fill="#4C8E58" />
+      <circle cx="38" cy="80" r="6" fill={BRAND_AMBER} />
+      <path d="M118 34 L168 34 L178 68 L118 68 Z" fill="#2A5B36" />
+      <path d="M126 40 L162 40 L169 62 L126 62 Z" fill="#BFE0E6" fillOpacity="0.85" />
+      <rect x="128" y="14" width="9" height="26" rx="2.5" fill="#262b23" />
+      <rect x="127" y="10" width="11" height="6" rx="2" fill="#3a3a34" />
+    </svg>
+  );
+}
+
+function CombineArt() {
+  return (
+    <svg viewBox="0 0 240 140" className="h-full w-full">
+      <ellipse cx="120" cy="122" rx="100" ry="8" fill="rgba(0,0,0,0.15)" />
+      <rect x="8" y="78" width="58" height="16" rx="4" fill={BRAND_AMBER} />
+      {[0, 1, 2, 3, 4, 5].map((i) => <rect key={i} x={12 + i * 9} y="72" width="4" height="12" fill="#c8862e" />)}
+      <rect x="58" y="52" width="120" height="42" rx="10" fill="#D99A3D" />
+      <rect x="58" y="52" width="120" height="12" rx="6" fill="#E7AE5A" />
+      <rect x="112" y="24" width="58" height="32" rx="9" fill="#B87B2A" />
+      <rect x="176" y="30" width="34" height="36" rx="7" fill="#96693F" />
+      <rect x="182" y="36" width="22" height="20" rx="4" fill="#BFE0E6" fillOpacity="0.85" />
+      <circle cx="200" cy="106" r="26" fill="#1a1f17" />
+      <circle cx="200" cy="106" r="12" fill="#EDEAE0" />
+      <circle cx="200" cy="106" r="4" fill="#3a3a34" />
+      <circle cx="80" cy="106" r="16" fill="#1a1f17" />
+      <circle cx="80" cy="106" r="7" fill="#EDEAE0" />
+    </svg>
+  );
+}
+
+function WarehouseArt() {
+  return (
+    <svg viewBox="0 0 220 140" className="h-full w-full">
+      <ellipse cx="110" cy="126" rx="98" ry="7" fill="rgba(0,0,0,0.15)" />
+      <polygon points="14,58 110,18 206,58" fill={BRAND_SOIL} />
+      <polygon points="14,58 110,18 110,26 22,60" fill="#B4834F" />
+      <rect x="24" y="58" width="172" height="66" rx="4" fill="#3B7A48" />
+      <rect x="24" y="58" width="172" height="10" fill="#4C8E58" />
+      {[0, 1, 2, 3].map((i) => <rect key={i} x={40 + i * 40} y="70" width="20" height="14" rx="2" fill="#BFE0E6" fillOpacity="0.85" />)}
+      <rect x="78" y="90" width="64" height="34" rx="3" fill="#1c241a" />
+      {[0, 1, 2, 3, 4].map((i) => <rect key={i} x="78" y={92 + i * 6.5} width="64" height="2.4" fill="#333d2f" />)}
+      <rect x="152" y="104" width="16" height="16" rx="2" fill={BRAND_AMBER} />
+      <rect x="169" y="108" width="14" height="12" rx="2" fill="#c8862e" />
+    </svg>
+  );
+}
+
+function VisualPanel({ children, badge, dimmed, photoUrl }) {
+  const [imgError, setImgError] = useState(false);
+  const showPhoto = !!photoUrl && !imgError;
+  return (
+    <div className="relative flex h-36 items-center justify-center overflow-hidden rounded-2xl" style={!showPhoto ? { backgroundImage: "linear-gradient(180deg, #DCE9DA 0%, #C7DCC6 100%)" } : undefined}>
+      {showPhoto ? (
+        <img src={photoUrl} alt={badge} loading="lazy" onError={() => setImgError(true)} className="absolute inset-0 h-full w-full object-cover" />
+      ) : (
+        <>
+          <div className="absolute -left-8 -top-8 h-28 w-28 rounded-full bg-white/25" />
+          <div className="h-28 w-full px-4">{children}</div>
+        </>
+      )}
+      {showPhoto && <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />}
+      <span className="absolute left-3 top-3 rounded-full bg-black/30 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">{badge}</span>
+      {dimmed && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/45">
           <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#1C2B22]">Band qilingan</span>
         </div>
@@ -166,8 +249,17 @@ function MachineVisual({ type, available }) {
   );
 }
 
+function MachineVisual({ type, available }) {
+  const isTraktor = type === "traktor";
+  return (
+    <VisualPanel badge={isTraktor ? "Traktor" : "Kombayn"} dimmed={!available} photoUrl={isTraktor ? IMG_TRACTOR : IMG_COMBINE}>
+      {isTraktor ? <TractorArt /> : <CombineArt />}
+    </VisualPanel>
+  );
+}
+
 /* --------------------------------- Page 1 --------------------------------- */
-function RentalPage({ t, showToast }) {
+function RentalPage({ t, showToast, addHistory }) {
   const [selected, setSelected] = useState(null);
   const [days, setDays] = useState(1);
   const [withDriver, setWithDriver] = useState(false);
@@ -255,7 +347,11 @@ function RentalPage({ t, showToast }) {
               <span className="text-xl font-extrabold" style={{ color: BRAND_GREEN, display: "inline-block", animation: bump ? "ferdoBump 0.26s ease-out" : undefined }}>{formatSum(total)}</span>
             </div>
           </div>
-          <button onClick={() => { showToast(`Buyurtma qabul qilindi — ${selected.name}, ${days} kun`); setSelected(null); }}
+          <button onClick={() => {
+              showToast(`Buyurtma qabul qilindi — ${selected.name}, ${days} kun`);
+              addHistory({ type: "rental", title: selected.name, subtitle: `${days} kunga ijara${withDriver ? " · haydovchi bilan" : " · haydovchisiz"}`, amount: total });
+              setSelected(null);
+            }}
             className="mt-5 w-full rounded-2xl py-3.5 text-center text-base font-semibold text-white transition-opacity active:opacity-90"
             style={{ backgroundColor: BRAND_GREEN }}>Buyurtma berish</button>
         </SheetModal>
@@ -265,7 +361,19 @@ function RentalPage({ t, showToast }) {
 }
 
 /* --------------------------------- Page 2 --------------------------------- */
-function LogisticsPage({ t, showToast }) {
+function DriverThumb() {
+  const [imgError, setImgError] = useState(false);
+  if (imgError) {
+    return (
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ backgroundColor: BRAND_SOIL + "22" }}>
+        <Icon name="Truck" size={24} color={BRAND_SOIL} />
+      </div>
+    );
+  }
+  return <img src={IMG_TRUCK} alt="Yuk mashinasi" loading="lazy" onError={() => setImgError(true)} className="h-12 w-12 rounded-xl object-cover" />;
+}
+
+function LogisticsPage({ t, showToast, addHistory }) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [weight, setWeight] = useState("");
@@ -301,8 +409,7 @@ function LogisticsPage({ t, showToast }) {
             <input value={weight} onChange={(e) => setWeight(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="Yuk vazni (tonna)" inputMode="decimal" className={`w-full bg-transparent text-sm outline-none ${t.text}`} />
           </div>
           <button onClick={handleSearch} disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
-            <Icon name="Loader2" size={17} className={loading ? "" : "hidden"} />
-            {!loading && <Icon name="Search" size={17} />}
+            <Icon name={loading ? "Loader2" : "Search"} size={17} />
             {loading ? "Qidirilmoqda..." : "Qidirish"}
           </button>
         </div>
@@ -317,9 +424,7 @@ function LogisticsPage({ t, showToast }) {
                 <div key={d.id} className={`ferdo-anim rounded-2xl border ${t.cardBorder} ${t.card} p-4`} style={{ animation: `ferdoSlideUp 0.35s ease-out both`, animationDelay: `${i * 70}ms` }}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: BRAND_SOIL + "22" }}>
-                        <Icon name="Truck" size={20} color={BRAND_SOIL} />
-                      </div>
+                      <DriverThumb />
                       <div>
                         <h3 className={`text-sm font-semibold ${t.text}`}>{d.vehicleModel}</h3>
                         <p className={`text-xs ${t.subtext}`}>{d.driverName}</p>
@@ -357,7 +462,10 @@ function LogisticsPage({ t, showToast }) {
             <Icon name="Phone" size={18} color={BRAND_GREEN} />
             <span className={`text-base font-semibold ${t.text}`}>{contact.phone}</span>
           </div>
-          <a href={`tel:${contact.phone.replace(/\s/g, "")}`} onClick={() => showToast(`${contact.driverName} bilan bog'lanmoqda...`)}
+          <a href={`tel:${contact.phone.replace(/\s/g, "")}`} onClick={() => {
+              showToast(`${contact.driverName} bilan bog'lanmoqda...`);
+              addHistory({ type: "logistics", title: `${contact.vehicleModel} — ${contact.driverName}`, subtitle: `${from || "Yo'nalish"} → ${to || "manzil"}${weight ? `, ${weight} tonna` : ""}`, amount: contact.basePrice });
+            }}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
             <Icon name="Phone" size={18} /> Qo'ng'iroq qilish
           </a>
@@ -368,39 +476,45 @@ function LogisticsPage({ t, showToast }) {
 }
 
 /* --------------------------------- Page 3 --------------------------------- */
-function WarehousePage({ t, showToast }) {
+function WarehousePage({ t, showToast, addHistory }) {
   const [warehouses, setWarehouses] = useState(INITIAL_WAREHOUSES);
   const [target, setTarget] = useState(null);
   const [tonnage, setTonnage] = useState(10);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const [startDate, setStartDate] = useState(todayStr);
+  const [storageDays, setStorageDays] = useState(30);
   const sorted = useMemo(() => [...warehouses].sort((a, b) => a.distanceKm - b.distanceKm), [warehouses]);
 
-  const openBooking = (w) => { setTarget(w); setTonnage(Math.min(10, w.freeCapacity)); };
+  const openBooking = (w) => { setTarget(w); setTonnage(Math.min(10, w.freeCapacity)); setStartDate(todayStr); setStorageDays(30); };
+
+  const endDateLabel = useMemo(() => {
+    const d = new Date(startDate || todayStr);
+    d.setDate(d.getDate() + storageDays);
+    return d.toLocaleDateString("uz-UZ", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }, [startDate, storageDays, todayStr]);
+
   const confirmBooking = () => {
     if (!target) return;
     setWarehouses((prev) => prev.map((w) => (w.id === target.id ? { ...w, freeCapacity: Math.max(0, w.freeCapacity - tonnage) } : w)));
     showToast(`${target.name} — ${tonnage} tonnaga bron qilindi`);
+    addHistory({ type: "warehouse", title: target.name, subtitle: `${tonnage} tonna · ${startDate} dan ${storageDays} kunga (${endDateLabel} gacha)` });
     setTarget(null);
   };
 
   return (
     <div>
       <SectionHeader title="Omborxona" subtitle="Sizga eng yaqin omborlar" t={t} />
-      <div className="space-y-3 px-5">
+      <div className="space-y-4 px-5">
         {sorted.map((w) => {
           const pct = Math.round((w.freeCapacity / w.totalCapacity) * 100);
           return (
-            <div key={w.id} className={`rounded-2xl border ${t.cardBorder} ${t.card} p-4`}>
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: BRAND_GREEN + "1F" }}>
-                    <Icon name="Warehouse" size={20} color={BRAND_GREEN} />
-                  </div>
-                  <div>
-                    <h3 className={`text-sm font-semibold ${t.text}`}>{w.name}</h3>
-                    <p className={`text-xs ${t.subtext}`}>{w.region}</p>
-                  </div>
+            <div key={w.id} className={`rounded-2xl border ${t.cardBorder} ${t.card} p-3`}>
+              <VisualPanel badge={`${w.distanceKm} km`} photoUrl={WAREHOUSE_IMAGES[w.id]}><WarehouseArt /></VisualPanel>
+              <div className="mt-3 flex items-start justify-between gap-2">
+                <div>
+                  <h3 className={`text-base font-semibold ${t.text}`}>{w.name}</h3>
+                  <p className={`mt-0.5 text-xs ${t.subtext}`}>{w.region}</p>
                 </div>
-                <span className={`flex items-center gap-1 text-xs font-medium ${t.faint}`}><Icon name="MapPin" size={13} /> {w.distanceKm} km</span>
               </div>
               <div className="mt-3">
                 <div className="flex items-center justify-between text-xs">
@@ -435,11 +549,97 @@ function WarehousePage({ t, showToast }) {
               <span className={`text-sm ${t.faint}`}>tonna / {target.freeCapacity} bo'sh</span>
             </div>
           </div>
+          <div className="mt-4">
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Qaysi sanadan boshlab?</label>
+            <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
+              <Icon name="Calendar" size={18} className={t.faint} />
+              <input type="date" min={todayStr} value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
+            </div>
+          </div>
+          <div className="mt-4">
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha kunga saqlaysiz?</label>
+            <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
+              <input type="number" min={1} value={storageDays} onChange={(e) => setStorageDays(Math.max(1, Number(e.target.value) || 1))}
+                className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
+              <span className={`whitespace-nowrap text-sm ${t.faint}`}>kun · {endDateLabel} gacha</span>
+            </div>
+          </div>
           <button onClick={confirmBooking} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
             <Icon name="Check" size={18} /> Bronni tasdiqlash
           </button>
         </SheetModal>
       )}
+    </div>
+  );
+}
+
+/* --------------------------------- Page 4 --------------------------------- */
+const HISTORY_TYPE_META = {
+  rental: { label: "Ijara", icon: "Tractor", color: BRAND_GREEN },
+  logistics: { label: "Logistika", icon: "Truck", color: BRAND_SOIL },
+  warehouse: { label: "Ombor", icon: "Warehouse", color: BRAND_AMBER },
+};
+
+function HistoryPage({ t, history }) {
+  const [filter, setFilter] = useState("all");
+  const filtered = filter === "all" ? history : history.filter((h) => h.type === filter);
+  const chips = [
+    { id: "all", label: "Barchasi" },
+    { id: "rental", label: "Ijara" },
+    { id: "logistics", label: "Logistika" },
+    { id: "warehouse", label: "Ombor" },
+  ];
+
+  return (
+    <div>
+      <SectionHeader title="Buyurtmalar tarixi" subtitle="Barcha so'rov va bronlaringiz shu yerda" t={t} />
+      <div className="flex gap-2 overflow-x-auto px-5 pb-1">
+        {chips.map((c) => {
+          const active = filter === c.id;
+          return (
+            <button key={c.id} onClick={() => setFilter(c.id)}
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${active ? "text-white" : `${t.subtext} ${t.chip}`}`}
+              style={{ backgroundColor: active ? BRAND_GREEN : undefined }}>
+              {c.label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-4 space-y-3 px-5">
+        {filtered.length === 0 && (
+          <div className={`rounded-2xl border border-dashed ${t.cardBorder} px-5 py-10 text-center`}>
+            <Icon name="History" size={28} className={`mx-auto ${t.faint}`} />
+            <p className={`mt-3 text-sm ${t.subtext}`}>Bu toifada hali buyurtma yo'q</p>
+          </div>
+        )}
+        {filtered.map((h, i) => {
+          const meta = HISTORY_TYPE_META[h.type];
+          return (
+            <div key={h.id} className={`ferdo-anim rounded-2xl border ${t.cardBorder} ${t.card} p-4`} style={{ animation: "ferdoSlideUp 0.3s ease-out both", animationDelay: `${i * 50}ms` }}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ backgroundColor: meta.color + "22" }}>
+                    <Icon name={meta.icon} size={18} color={meta.color} />
+                  </div>
+                  <div>
+                    <h3 className={`text-sm font-semibold ${t.text}`}>{h.title}</h3>
+                    <p className={`text-xs ${t.subtext}`}>{h.subtitle}</p>
+                  </div>
+                </div>
+                <span className="whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                  style={{ backgroundColor: h.status === "Yakunlangan" ? BRAND_GREEN + "1F" : BRAND_AMBER + "26", color: h.status === "Yakunlangan" ? BRAND_GREEN : "#A9761E" }}>
+                  {h.status}
+                </span>
+              </div>
+              <div className={`mt-3 flex items-center justify-between border-t ${t.divider} pt-2.5`}>
+                <span className={`flex items-center gap-1.5 text-xs ${t.faint}`}><Icon name="Clock3" size={13} /> {h.when}</span>
+                {h.amount !== undefined && <span className={`text-sm font-bold ${t.text}`}>{formatSum(h.amount)}</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -450,15 +650,16 @@ function BottomNav({ tab, setTab, t }) {
     { id: "rental", label: "Texnika", icon: "Tractor" },
     { id: "logistics", label: "Logistika", icon: "Truck" },
     { id: "warehouse", label: "Ombor", icon: "Warehouse" },
+    { id: "history", label: "Tarix", icon: "History" },
   ];
   return (
-    <nav className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-md items-center justify-around border-t ${t.navBorder} ${t.navBg} px-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-2 backdrop-blur-md`}>
+    <nav className={`fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-md items-center justify-around border-t ${t.navBorder} ${t.navBg} px-1 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-2 backdrop-blur-md`}>
       {items.map((item) => {
         const active = tab === item.id;
         return (
           <button key={item.id} onClick={() => setTab(item.id)} className="flex flex-1 flex-col items-center gap-1 rounded-2xl py-1.5 transition-colors">
-            <span className="flex h-9 w-14 items-center justify-center rounded-full transition-colors" style={{ backgroundColor: active ? BRAND_GREEN : "transparent", color: active ? "white" : undefined }}>
-              <Icon name={item.icon} size={20} className={active ? "" : t.faint} />
+            <span className="flex h-9 w-12 items-center justify-center rounded-full transition-colors" style={{ backgroundColor: active ? BRAND_GREEN : "transparent" }}>
+              <Icon name={item.icon} size={20} color={active ? "white" : undefined} className={active ? "" : t.faint} />
             </span>
             <span className={`text-[11px] font-medium ${active ? "" : t.faint}`} style={active ? { color: BRAND_GREEN } : undefined}>{item.label}</span>
           </button>
@@ -472,7 +673,7 @@ function TopBar({ dark, setDark, t }) {
   return (
     <div className={`sticky top-0 z-30 flex items-center justify-between border-b ${t.navBorder} ${t.navBg} px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+12px)] backdrop-blur-md`}>
       <div className="flex items-center gap-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-xl text-white" style={{ backgroundColor: BRAND_GREEN }}><Icon name="Sprout" size={17} /></span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl text-white" style={{ backgroundColor: BRAND_GREEN }}><Icon name="Sprout" size={17} color="white" /></span>
         <span className={`text-base font-extrabold tracking-tight ${t.text}`}>FERDO</span>
       </div>
       <button onClick={() => setDark(!dark)} className={`flex h-8 w-8 items-center justify-center rounded-full ${t.chip}`} aria-label="Mavzuni almashtirish">
@@ -486,6 +687,7 @@ function FerdoApp() {
   const [dark, setDark] = useState(false);
   const [tab, setTab] = useState("rental");
   const [toast, setToast] = useState(null);
+  const [history, setHistory] = useState(INITIAL_HISTORY);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia) {
@@ -494,15 +696,19 @@ function FerdoApp() {
   }, []);
 
   const showToast = (msg) => { setToast(msg); window.setTimeout(() => setToast(null), 2600); };
+  const addHistory = (entry) => {
+    setHistory((prev) => [{ ...entry, id: `h${Date.now()}`, when: "Hozir", status: "Kutilmoqda" }, ...prev]);
+  };
   const t = dark ? DARK : LIGHT;
 
   return (
     <div className={`mx-auto min-h-screen w-full max-w-md ${t.appBg} sm:my-4 sm:min-h-[812px] sm:rounded-[36px] sm:border sm:${t.cardBorder} sm:shadow-2xl`}>
       <TopBar dark={dark} setDark={setDark} t={t} />
       <main className="pb-28 pt-2">
-        {tab === "rental" && <RentalPage t={t} showToast={showToast} />}
-        {tab === "logistics" && <LogisticsPage t={t} showToast={showToast} />}
-        {tab === "warehouse" && <WarehousePage t={t} showToast={showToast} />}
+        {tab === "rental" && <RentalPage t={t} showToast={showToast} addHistory={addHistory} />}
+        {tab === "logistics" && <LogisticsPage t={t} showToast={showToast} addHistory={addHistory} />}
+        {tab === "warehouse" && <WarehousePage t={t} showToast={showToast} addHistory={addHistory} />}
+        {tab === "history" && <HistoryPage t={t} history={history} />}
       </main>
       <BottomNav tab={tab} setTab={setTab} t={t} />
       {toast && <Toast message={toast} t={t} />}
