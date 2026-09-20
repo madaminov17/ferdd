@@ -100,16 +100,16 @@ const DRIVER_POOL = [
 ];
 
 const INITIAL_WAREHOUSES = [
-  { id: "w1", name: "Sergeli logistika ombori", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, totalCapacity: 500, freeCapacity: 150,
-    photo: commons("Beijing Xijiao Food Cold Storage Plant (20210408170320).jpg"),
+  { id: "w1", name: "Sergeli logistika ombori", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, pricePerTonDay: 1500, totalCapacity: 500, freeCapacity: 150,
+    photo: commons("Warehouse distribution-center-1136510.jpg"),
     art: { kind: "hangar", roof: "#96693F", light: "#B4834F", wall: "#3B7A48", accent: "#E1A13B" } },
-  { id: "w2", name: "Qibray don elevatori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, totalCapacity: 300, freeCapacity: 80,
+  { id: "w2", name: "Qibray don elevatori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, pricePerTonDay: 1200, totalCapacity: 300, freeCapacity: 80,
     photo: commons("Cargill AgHorizons Grain Elevator-silos, Madison, MN.jpg"),
     art: { kind: "silo", roof: "#7A5636", wall: "#C9A66B", silo: "#D9DDD6", light: "#F1F3EE", sky: "linear-gradient(180deg,#F1E6CC,#E3D2A6)" } },
-  { id: "w3", name: "Zangiota sovutgichli ombori", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, totalCapacity: 600, freeCapacity: 220,
+  { id: "w3", name: "Zangiota sovutgichli ombori", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, pricePerTonDay: 3500, totalCapacity: 600, freeCapacity: 220,
     photo: commons("JA Saga South Refrigerated rice storage warehouses.jpg"),
     art: { kind: "cold", roof: "#9FB3C0", wall: "#EAF1F5", accent: "#3A82C4", sky: "linear-gradient(180deg,#DCEAF4,#BFD6E6)" } },
-  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40,
+  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, pricePerTonDay: 1000, totalCapacity: 250, freeCapacity: 40,
     photo: commons("Grain elevator, Grove City, Minnesota-8.jpg"),
     art: { kind: "grain", roof: "#5C4230", wall: "#8F6A4A", silo: "#C7B58F", accent: "#E1A13B", sky: "linear-gradient(180deg,#F4E2B8,#E6C980)" } },
 ];
@@ -347,12 +347,64 @@ function MachineVisual({ machine }) {
   );
 }
 
+/* ------------------------------ Date + number helpers ------------------------------ */
+function localISO(d = new Date()) {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+function fmtDate(iso, plusDays = 0) {
+  const [y, m, d] = (iso || localISO()).split("-").map(Number);
+  const dt = new Date(y, m - 1, d + plusDays);
+  const p = (n) => String(n).padStart(2, "0");
+  return `${p(dt.getDate())}.${p(dt.getMonth() + 1)}.${dt.getFullYear()}`;
+}
+
+/* Yozib ham, +/- bilan ham o'zgartiriladigan son maydoni (maydonni tozalab qayta yozish mumkin) */
+function NumStepper({ value, onChange, min = 1, max = 9999, unit, t }) {
+  const [text, setText] = useState(String(value));
+  useEffect(() => { setText(String(value)); }, [value]);
+  const commit = (n) => { const c = Math.min(max, Math.max(min, n)); onChange(c); setText(String(c)); };
+  const btn = "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl font-bold text-white disabled:opacity-30 active:opacity-90";
+  return (
+    <div className={`flex items-center gap-2 rounded-2xl border ${t.cardBorder} ${t.inputBg} p-1.5`}>
+      <button type="button" aria-label="Kamaytirish" disabled={value <= min} onClick={() => commit(value - 1)} className={btn} style={{ backgroundColor: BRAND_GREEN }}>−</button>
+      <input inputMode="numeric" value={text}
+        onChange={(e) => {
+          const d = e.target.value.replace(/\D/g, "").slice(0, 5);
+          setText(d);
+          if (d !== "" && Number(d) >= min) onChange(Math.min(max, Number(d)));
+        }}
+        onBlur={() => commit(Number(text) || min)}
+        className={`min-w-0 flex-1 bg-transparent text-center text-lg font-bold outline-none ${t.text}`} />
+      <span className={`text-sm ${t.faint}`}>{unit}</span>
+      <button type="button" aria-label="Ko'paytirish" disabled={value >= max} onClick={() => commit(value + 1)} className={btn} style={{ backgroundColor: BRAND_GREEN }}>+</button>
+    </div>
+  );
+}
+
+function QuickChips({ options, value, onPick, unit, t }) {
+  return (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {options.map((o) => {
+        const active = value === o;
+        return (
+          <button key={o} type="button" onClick={() => onPick(o)}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold ${active ? "text-white" : `${t.subtext} ${t.chip}`}`}
+            style={{ backgroundColor: active ? BRAND_GREEN : undefined }}>{o} {unit}</button>
+        );
+      })}
+    </div>
+  );
+}
+
 /* --------------------------------- Page 1 --------------------------------- */
 function RentalPage({ t, showToast, addHistory }) {
   const [selected, setSelected] = useState(null);
   const [days, setDays] = useState(1);
   const [withDriver, setWithDriver] = useState(false);
+  const [startDate, setStartDate] = useState(localISO());
   const [bump, setBump] = useState(false);
+  const todayStr = localISO();
 
   const total = useMemo(() => {
     if (!selected) return 0;
@@ -366,7 +418,7 @@ function RentalPage({ t, showToast, addHistory }) {
     return () => window.clearTimeout(tmr);
   }, [total, selected]);
 
-  const openMachine = (m) => { if (!m.available) return; setSelected(m); setDays(1); setWithDriver(false); };
+  const openMachine = (m) => { if (!m.available) return; setSelected(m); setDays(1); setWithDriver(false); setStartDate(localISO()); };
 
   return (
     <div>
@@ -402,13 +454,18 @@ function RentalPage({ t, showToast, addHistory }) {
           </div>
           <div className="mt-4"><MachineVisual machine={selected} /></div>
           <div className="mt-5">
-            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha kunga olasiz?</label>
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Qaysi sanadan boshlab?</label>
             <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
               <Icon name="Calendar" size={18} className={t.faint} />
-              <input type="number" min={1} value={days} onChange={(e) => setDays(Math.max(1, Number(e.target.value) || 1))}
+              <input type="date" min={todayStr} value={startDate} onChange={(e) => setStartDate(e.target.value || todayStr)}
                 className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
-              <span className={`text-sm ${t.faint}`}>kun</span>
             </div>
+          </div>
+          <div className="mt-4">
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha kunga olasiz?</label>
+            <NumStepper value={days} onChange={setDays} min={1} max={365} unit="kun" t={t} />
+            <QuickChips options={[1, 3, 7, 14, 30]} value={days} onPick={setDays} unit="kun" t={t} />
+            <p className={`mt-2 text-xs ${t.subtext}`}>Ijara muddati: <span className={`font-semibold ${t.text}`}>{fmtDate(startDate)} — {fmtDate(startDate, days - 1)}</span></p>
           </div>
           <div className={`mt-4 flex items-center justify-between rounded-2xl border ${t.cardBorder} px-4 py-3`}>
             <div className="flex items-center gap-2.5">
@@ -438,7 +495,7 @@ function RentalPage({ t, showToast, addHistory }) {
           </div>
           <button onClick={() => {
               showToast(`Buyurtma qabul qilindi — ${selected.name}, ${days} kun`);
-              addHistory({ type: "rental", title: selected.name, subtitle: `${days} kunga ijara${withDriver ? " · haydovchi bilan" : " · haydovchisiz"}`, amount: total });
+              addHistory({ type: "rental", title: selected.name, subtitle: `${fmtDate(startDate)} dan ${days} kunga (${fmtDate(startDate, days - 1)} gacha)${withDriver ? " · haydovchi bilan" : " · haydovchisiz"}`, amount: total });
               setSelected(null);
             }}
             className="mt-5 w-full rounded-2xl py-3.5 text-center text-base font-semibold text-white transition-opacity active:opacity-90"
@@ -571,24 +628,21 @@ function WarehousePage({ t, showToast, addHistory }) {
   const [warehouses, setWarehouses] = useState(INITIAL_WAREHOUSES);
   const [target, setTarget] = useState(null);
   const [tonnage, setTonnage] = useState(10);
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = localISO();
   const [startDate, setStartDate] = useState(todayStr);
   const [storageDays, setStorageDays] = useState(30);
   const sorted = useMemo(() => [...warehouses].sort((a, b) => a.distanceKm - b.distanceKm), [warehouses]);
 
   const openBooking = (w) => { setTarget(w); setTonnage(Math.min(10, w.freeCapacity)); setStartDate(todayStr); setStorageDays(30); };
 
-  const endDateLabel = useMemo(() => {
-    const d = new Date(startDate || todayStr);
-    d.setDate(d.getDate() + storageDays);
-    return d.toLocaleDateString("uz-UZ", { day: "2-digit", month: "2-digit", year: "numeric" });
-  }, [startDate, storageDays, todayStr]);
+  const endDateLabel = fmtDate(startDate, storageDays - 1);
+  const total = target ? target.pricePerTonDay * tonnage * storageDays : 0;
 
   const confirmBooking = () => {
     if (!target) return;
     setWarehouses((prev) => prev.map((w) => (w.id === target.id ? { ...w, freeCapacity: Math.max(0, w.freeCapacity - tonnage) } : w)));
-    showToast(`${target.name} — ${tonnage} tonnaga bron qilindi`);
-    addHistory({ type: "warehouse", title: target.name, subtitle: `${tonnage} tonna · ${startDate} dan ${storageDays} kunga (${endDateLabel} gacha)` });
+    showToast(`${target.name} — ${tonnage} tonna, ${formatSum(total)}`);
+    addHistory({ type: "warehouse", title: target.name, subtitle: `${tonnage} tonna · ${fmtDate(startDate)} dan ${storageDays} kunga (${endDateLabel} gacha)`, amount: total });
     setTarget(null);
   };
 
@@ -605,6 +659,7 @@ function WarehousePage({ t, showToast, addHistory }) {
                 <div>
                   <h3 className={`text-base font-semibold ${t.text}`}>{w.name}</h3>
                   <p className={`mt-0.5 text-xs ${t.subtext}`}>{w.region}</p>
+                  <p className="mt-1 text-sm font-bold" style={{ color: BRAND_GREEN }}>{formatSum(w.pricePerTonDay)} <span className={`text-xs font-normal ${t.faint}`}>/ tonna · kun</span></p>
                 </div>
               </div>
               <div className="mt-3">
@@ -632,28 +687,37 @@ function WarehousePage({ t, showToast, addHistory }) {
           </div>
           <p className={`mt-1 text-sm ${t.subtext}`}>{target.region} · {target.distanceKm} km</p>
           <div className="mt-4">
-            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha tonna joy bron qilasiz?</label>
-            <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
-              <input type="number" min={1} max={target.freeCapacity} value={tonnage}
-                onChange={(e) => setTonnage(Math.max(1, Math.min(target.freeCapacity, Number(e.target.value) || 1)))}
-                className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
-              <span className={`text-sm ${t.faint}`}>tonna / {target.freeCapacity} bo'sh</span>
-            </div>
+            <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha tonna yuk saqlaysiz?</label>
+            <NumStepper value={tonnage} onChange={setTonnage} min={1} max={target.freeCapacity} unit="tonna" t={t} />
+            <QuickChips options={[5, 10, 20, 50].filter((n) => n <= target.freeCapacity)} value={tonnage} onPick={setTonnage} unit="t" t={t} />
+            <p className={`mt-2 text-xs ${t.faint}`}>Bo'sh joy: {target.freeCapacity} tonna. Narx tonna soniga bog'liq, shuning uchun uni kiritish shart.</p>
           </div>
           <div className="mt-4">
             <label className={`mb-2 block text-sm font-medium ${t.text}`}>Qaysi sanadan boshlab?</label>
             <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
               <Icon name="Calendar" size={18} className={t.faint} />
-              <input type="date" min={todayStr} value={startDate} onChange={(e) => setStartDate(e.target.value)}
+              <input type="date" min={todayStr} value={startDate} onChange={(e) => setStartDate(e.target.value || todayStr)}
                 className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
             </div>
           </div>
           <div className="mt-4">
             <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha kunga saqlaysiz?</label>
-            <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
-              <input type="number" min={1} value={storageDays} onChange={(e) => setStorageDays(Math.max(1, Number(e.target.value) || 1))}
-                className={`w-full bg-transparent text-base font-semibold outline-none ${t.text}`} />
-              <span className={`whitespace-nowrap text-sm ${t.faint}`}>kun · {endDateLabel} gacha</span>
+            <NumStepper value={storageDays} onChange={setStorageDays} min={1} max={365} unit="kun" t={t} />
+            <QuickChips options={[7, 14, 30, 60, 90]} value={storageDays} onPick={setStorageDays} unit="kun" t={t} />
+            <p className={`mt-2 text-xs ${t.subtext}`}>Saqlash muddati: <span className={`font-semibold ${t.text}`}>{fmtDate(startDate)} — {endDateLabel}</span></p>
+          </div>
+          <div className={`mt-5 space-y-1.5 border-t ${t.divider} pt-4`}>
+            <div className={`flex items-center justify-between text-sm ${t.subtext}`}>
+              <span>Tarif</span>
+              <span>{formatSum(target.pricePerTonDay)} / tonna · kun</span>
+            </div>
+            <div className={`flex items-center justify-between text-sm ${t.subtext}`}>
+              <span>{tonnage} tonna × {storageDays} kun</span>
+              <span>{tonnage * storageDays} tonna·kun</span>
+            </div>
+            <div className="flex items-center justify-between pt-1.5">
+              <span className={`text-sm font-medium ${t.text}`}>Jami narx</span>
+              <span className="text-xl font-extrabold" style={{ color: BRAND_GREEN }}>{formatSum(total)}</span>
             </div>
           </div>
           <button onClick={confirmBooking} className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-semibold text-white active:opacity-90" style={{ backgroundColor: BRAND_GREEN }}>
