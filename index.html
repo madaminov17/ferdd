@@ -62,26 +62,41 @@ function Icon({ name, size = 20, color = "currentColor", className = "" }) {
 }
 
 /* -------------------------------- Mock data -------------------------------- */
+/* RASM QO'SHISH: har bir elementga  photo: "https://..."  yoki data:image/... qo'ying.
+   photo bo'sh bo'lsa (yoki yuklanmasa) — o'sha elementning o'z rasmi (illyustratsiya) ko'rsatiladi. */
 const MACHINES = [
-  { id: "m1", name: "John Deere 8310R", type: "traktor", spec: "310 ot kuchi · Universal", pricePerDay: 850000, available: true },
-  { id: "m2", name: "Case IH 7250", type: "kombayn", spec: "Bunker hajmi 10.5 m³", pricePerDay: 1450000, available: true },
-  { id: "m3", name: "MTZ Belarus 892", type: "traktor", spec: "92 ot kuchi · Yengil ishlar", pricePerDay: 420000, available: true },
-  { id: "m4", name: "New Holland CR8.90", type: "kombayn", spec: "Yuqori unumdorlik · GPS", pricePerDay: 1680000, available: false },
-  { id: "m5", name: "Kirovets K-744", type: "traktor", spec: "428 ot kuchi · Og'ir tuproq", pricePerDay: 690000, available: true },
+  { id: "m1", name: "John Deere 8310R", type: "traktor", spec: "310 ot kuchi · Universal", pricePerDay: 850000, available: true, photo: "https://unsplash.com/photos/uzxr-c4UxQg/download?force=true&w=800",
+    art: { body: "#3F8F3E", light: "#57A653", cab: "#2B6B35", rim: "#F2D24B", stripe: "#F2D24B", rear: 34, front: 18, dual: true, beacon: true, sky: "linear-gradient(180deg,#F8E9C6 0%,#E8D39A 100%)" } },
+  { id: "m2", name: "Case IH 7250", type: "kombayn", spec: "Bunker hajmi 10.5 m³", pricePerDay: 1450000, available: true, photo: "https://unsplash.com/photos/zmCvkXfV8dY/download?force=true&w=800",
+    art: { body: "#C62F2F", light: "#DA4A45", header: "#B12626", reel: "#8E1D1D", bunker: "#A82424", cab: "#7A1818", rim: "#EEE9DF", gps: true, pipe: true, big: 27, sky: "linear-gradient(180deg,#F6D9C8 0%,#EBBE9E 100%)" } },
+  { id: "m3", name: "MTZ Belarus 892", type: "traktor", spec: "92 ot kuchi · Yengil ishlar", pricePerDay: 420000, available: true, photo: "https://unsplash.com/photos/y1VpCRx6KFM/download?force=true&w=800",
+    art: { body: "#2F6FB0", light: "#4A88C7", cab: "#1F4E82", rim: "#D7DDE3", rear: 27, front: 16, sky: "linear-gradient(180deg,#D4E6F5 0%,#B5D0E8 100%)" } },
+  { id: "m4", name: "New Holland CR8.90", type: "kombayn", spec: "Yuqori unumdorlik · GPS", pricePerDay: 1680000, available: false, photo: "https://unsplash.com/photos/5rKyHGdcKaA/download?force=true&w=800",
+    art: { body: "#F2C230", light: "#F7D25E", header: "#1F4E82", reel: "#163A61", bunker: "#D9A51E", cab: "#1F4E82", rim: "#EEE9DF", gps: true, pipe: true, big: 29, sky: "linear-gradient(180deg,#F5EFC8 0%,#E6DC9E 100%)" } },
+  { id: "m5", name: "Kirovets K-744", type: "traktor", spec: "428 ot kuchi · Og'ir tuproq", pricePerDay: 690000, available: true, photo: "https://unsplash.com/photos/KkKBxcap7hs/download?force=true&w=800",
+    art: { body: "#D86A2B", light: "#E88445", cab: "#8A3F17", rim: "#2E2E2A", stripe: "#2A2A26", rear: 38, front: 20, dual: true, sky: "linear-gradient(180deg,#EED8C4 0%,#DDB995 100%)" } },
 ];
 
 const DRIVER_POOL = [
-  { id: "d1", driverName: "Aziz Karimov", vehicleModel: "Isuzu Forward", rating: 4.8, ratingsCount: 126, phone: "+998 90 123 45 67", basePrice: 2200000, etaLabel: "Ertaga ertalab" },
-  { id: "d2", driverName: "Bahrom Yusupov", vehicleModel: "KamAZ 65115", rating: 4.6, ratingsCount: 84, phone: "+998 91 234 56 78", basePrice: 1950000, etaLabel: "Bugun kechqurun" },
-  { id: "d3", driverName: "Sardor Aliyev", vehicleModel: "MAN TGS", rating: 4.9, ratingsCount: 201, phone: "+998 93 345 67 89", basePrice: 2650000, etaLabel: "Ertaga, 10:00" },
-  { id: "d4", driverName: "Jasur Nematov", vehicleModel: "Howo Sinotruk", rating: 4.5, ratingsCount: 57, phone: "+998 94 456 78 90", basePrice: 1750000, etaLabel: "2 kun ichida" },
+  { id: "d1", driverName: "Aziz Karimov", vehicleModel: "Isuzu Forward", rating: 4.8, ratingsCount: 126, phone: "+998 90 123 45 67", basePrice: 2200000, etaLabel: "Ertaga ertalab", photo: "https://unsplash.com/photos/C-y-iAXoY_M/download?force=true&w=800",
+    art: { kind: "box", body: "#EEF2F5", light: "#FFFFFF", cab: "#2F6FB0", sky: "linear-gradient(180deg,#D4E6F5,#B5D0E8)" } },
+  { id: "d2", driverName: "Bahrom Yusupov", vehicleModel: "KamAZ 65115", rating: 4.6, ratingsCount: 84, phone: "+998 91 234 56 78", basePrice: 1950000, etaLabel: "Bugun kechqurun", photo: "https://unsplash.com/photos/peVKQQ2w-lg/download?force=true&w=800",
+    art: { kind: "dump", body: "#D98A2B", light: "#E9A54B", cab: "#2E7D6B", exhaust: true, sky: "linear-gradient(180deg,#F6E3C4,#E8C892)" } },
+  { id: "d3", driverName: "Sardor Aliyev", vehicleModel: "MAN TGS", rating: 4.9, ratingsCount: 201, phone: "+998 93 345 67 89", basePrice: 2650000, etaLabel: "Ertaga, 10:00", photo: "https://unsplash.com/photos/7zWoum7qzsg/download?force=true&w=800",
+    art: { kind: "semi", body: "#F2F2EE", stripe: "#C62F2F", cab: "#B8232F", sky: "linear-gradient(180deg,#F3D9D6,#E4B8B3)" } },
+  { id: "d4", driverName: "Jasur Nematov", vehicleModel: "Howo Sinotruk", rating: 4.5, ratingsCount: 57, phone: "+998 94 456 78 90", basePrice: 1750000, etaLabel: "2 kun ichida", photo: "https://unsplash.com/photos/CY4ce8XOLHo/download?force=true&w=800",
+    art: { kind: "tanker", body: "#5E9BB3", light: "#82B9CD", stripe: "#2A2A26", cab: "#3B7A48", exhaust: true, sky: "linear-gradient(180deg,#DCEBE0,#BFD8C7)" } },
 ];
 
 const INITIAL_WAREHOUSES = [
-  { id: "w1", name: "FERDO Sklad-1", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, totalCapacity: 500, freeCapacity: 150 },
-  { id: "w2", name: "Qibray agro-ombori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, totalCapacity: 300, freeCapacity: 80 },
-  { id: "w3", name: "Zangiota saqlash markazi", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, totalCapacity: 600, freeCapacity: 220 },
-  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40 },
+  { id: "w1", name: "FERDO Sklad-1", region: "Toshkent v., Sergeli tumani", distanceKm: 3.2, totalCapacity: 500, freeCapacity: 150, photo: "",
+    art: { kind: "hangar", roof: "#96693F", light: "#B4834F", wall: "#3B7A48", accent: "#E1A13B" } },
+  { id: "w2", name: "Qibray agro-ombori", region: "Toshkent v., Qibray tumani", distanceKm: 7.8, totalCapacity: 300, freeCapacity: 80, photo: "",
+    art: { kind: "silo", roof: "#7A5636", wall: "#C9A66B", silo: "#D9DDD6", light: "#F1F3EE", sky: "linear-gradient(180deg,#F1E6CC,#E3D2A6)" } },
+  { id: "w3", name: "Zangiota saqlash markazi", region: "Toshkent v., Zangiota tumani", distanceKm: 12.5, totalCapacity: 600, freeCapacity: 220, photo: "",
+    art: { kind: "cold", roof: "#9FB3C0", wall: "#EAF1F5", accent: "#3A82C4", sky: "linear-gradient(180deg,#DCEAF4,#BFD6E6)" } },
+  { id: "w4", name: "Chirchiq don ombori", region: "Toshkent v., Chirchiq shahri", distanceKm: 18, totalCapacity: 250, freeCapacity: 40, photo: "",
+    art: { kind: "grain", roof: "#5C4230", wall: "#8F6A4A", silo: "#C7B58F", accent: "#E1A13B", sky: "linear-gradient(180deg,#F4E2B8,#E6C980)" } },
 ];
 
 const INITIAL_HISTORY = [
@@ -101,16 +116,6 @@ const BRAND_GREEN = "#2E6B3E";
 const BRAND_GREEN_DARK = "#25552F";
 const BRAND_AMBER = "#E1A13B";
 const BRAND_SOIL = "#96693F";
-
-const IMG_TRACTOR = "https://images.unsplash.com/photo-1750987661701-428e0d4201fe?auto=format&fit=crop&w=800&q=70";
-const IMG_COMBINE = "https://images.unsplash.com/photo-1751787838727-375a59537d32?auto=format&fit=crop&w=800&q=70";
-const IMG_TRUCK = "https://images.unsplash.com/photo-1586037856547-c2a6dc6f4380?auto=format&fit=crop&w=400&q=70";
-const WAREHOUSE_IMAGES = {
-  w1: "https://images.unsplash.com/photo-1684695749267-233af13276d0?auto=format&fit=crop&w=800&q=70",
-  w2: "https://images.unsplash.com/photo-1669003750652-2027bd69e7a1?auto=format&fit=crop&w=800&q=70",
-  w3: "https://images.unsplash.com/photo-1721937718756-3bfec49f42a2?auto=format&fit=crop&w=800&q=70",
-  w4: "https://images.unsplash.com/photo-1627630534997-e2e8f4937782?auto=format&fit=crop&w=800&q=70",
-};
 
 /* ------------------------------ Small elements ------------------------------ */
 function Toggle({ checked, onChange }) {
@@ -165,77 +170,146 @@ function SectionHeader({ title, subtitle, t }) {
 }
 
 /* ------------------------------ SVG illustrations ---------------------------- */
-function TractorArt() {
+/* Har bir texnika, yuk mashinasi va ombor o'z rangi va shakliga ega. */
+function Wheel({ x, y, r, rim = "#EDEAE0" }) {
+  return (
+    <g>
+      <circle cx={x} cy={y} r={r} fill="#1a1f17" />
+      <circle cx={x} cy={y} r={r} fill="none" stroke="#000" strokeOpacity="0.25" strokeWidth="2" />
+      <circle cx={x} cy={y} r={r * 0.46} fill={rim} />
+      <circle cx={x} cy={y} r={r * 0.16} fill="#3a3a34" />
+    </g>
+  );
+}
+
+function TractorArt({ c }) {
+  const R = c.rear || 32, F = c.front || 18;
   return (
     <svg viewBox="0 0 220 140" className="h-full w-full">
-      <ellipse cx="110" cy="120" rx="95" ry="8" fill="rgba(0,0,0,0.15)" />
+      <ellipse cx="110" cy="122" rx="95" ry="8" fill="rgba(0,0,0,0.15)" />
       <rect x="58" y="88" width="112" height="8" rx="3" fill="#1c241a" />
-      <circle cx="158" cy="98" r="32" fill="#1a1f17" />
-      <circle cx="158" cy="98" r="32" fill="none" stroke="#000" strokeOpacity="0.25" strokeWidth="3" />
-      <circle cx="158" cy="98" r="15" fill="#EDEAE0" />
-      <circle cx="158" cy="98" r="5" fill="#3a3a34" />
-      <circle cx="66" cy="106" r="18" fill="#1a1f17" />
-      <circle cx="66" cy="106" r="8" fill="#EDEAE0" />
-      <circle cx="66" cy="106" r="3" fill="#3a3a34" />
-      <rect x="40" y="62" width="80" height="30" rx="7" fill="#3B7A48" />
-      <rect x="40" y="62" width="80" height="9" rx="4" fill="#4C8E58" />
+      <Wheel x={158} y={122 - R} r={R} rim={c.rim} />
+      <Wheel x={66} y={122 - F} r={F} rim={c.rim} />
+      <rect x="40" y="62" width="80" height="30" rx="7" fill={c.body} />
+      <rect x="40" y="62" width="80" height="9" rx="4" fill={c.light} />
+      {c.stripe && <rect x="40" y="78" width="80" height="4" fill={c.stripe} />}
       <circle cx="38" cy="80" r="6" fill={BRAND_AMBER} />
-      <path d="M118 34 L168 34 L178 68 L118 68 Z" fill="#2A5B36" />
+      <path d="M118 34 L168 34 L178 68 L118 68 Z" fill={c.cab} />
       <path d="M126 40 L162 40 L169 62 L126 62 Z" fill="#BFE0E6" fillOpacity="0.85" />
       <rect x="128" y="14" width="9" height="26" rx="2.5" fill="#262b23" />
       <rect x="127" y="10" width="11" height="6" rx="2" fill="#3a3a34" />
+      {c.beacon && <circle cx="148" cy="30" r="4" fill={BRAND_AMBER} />}
+      {c.dual && <Wheel x={186} y={122 - R * 0.85} r={R * 0.85} rim={c.rim} />}
     </svg>
   );
 }
 
-function CombineArt() {
+function CombineArt({ c }) {
   return (
     <svg viewBox="0 0 240 140" className="h-full w-full">
       <ellipse cx="120" cy="122" rx="100" ry="8" fill="rgba(0,0,0,0.15)" />
-      <rect x="8" y="78" width="58" height="16" rx="4" fill={BRAND_AMBER} />
-      {[0, 1, 2, 3, 4, 5].map((i) => <rect key={i} x={12 + i * 9} y="72" width="4" height="12" fill="#c8862e" />)}
-      <rect x="58" y="52" width="120" height="42" rx="10" fill="#D99A3D" />
-      <rect x="58" y="52" width="120" height="12" rx="6" fill="#E7AE5A" />
-      <rect x="112" y="24" width="58" height="32" rx="9" fill="#B87B2A" />
-      <rect x="176" y="30" width="34" height="36" rx="7" fill="#96693F" />
+      <rect x="8" y="78" width="58" height="16" rx="4" fill={c.header} />
+      {[0, 1, 2, 3, 4, 5].map((i) => <rect key={i} x={12 + i * 9} y="72" width="4" height="12" fill={c.reel} />)}
+      <rect x="58" y="52" width="120" height="42" rx="10" fill={c.body} />
+      <rect x="58" y="52" width="120" height="12" rx="6" fill={c.light} />
+      <rect x="112" y="24" width="58" height="32" rx="9" fill={c.bunker} />
+      {c.pipe && <path d="M112 34 L88 14 L84 20 L108 42 Z" fill={c.bunker} />}
+      <rect x="176" y="30" width="34" height="36" rx="7" fill={c.cab} />
       <rect x="182" y="36" width="22" height="20" rx="4" fill="#BFE0E6" fillOpacity="0.85" />
-      <circle cx="200" cy="106" r="26" fill="#1a1f17" />
-      <circle cx="200" cy="106" r="12" fill="#EDEAE0" />
-      <circle cx="200" cy="106" r="4" fill="#3a3a34" />
-      <circle cx="80" cy="106" r="16" fill="#1a1f17" />
-      <circle cx="80" cy="106" r="7" fill="#EDEAE0" />
+      {c.gps && (<g><rect x="190" y="20" width="4" height="12" fill="#262b23" /><ellipse cx="192" cy="19" rx="9" ry="3.5" fill="#EDEAE0" /></g>)}
+      <Wheel x={200} y={96} r={c.big || 26} rim={c.rim} />
+      <Wheel x={80} y={106} r={16} rim={c.rim} />
     </svg>
   );
 }
 
-function WarehouseArt() {
+function TruckArt({ c }) {
+  const wheels = { box: [40, 62, 158], dump: [40, 62, 158], semi: [24, 44, 64, 120, 160], tanker: [40, 62, 158] }[c.kind];
   return (
-    <svg viewBox="0 0 220 140" className="h-full w-full">
-      <ellipse cx="110" cy="126" rx="98" ry="7" fill="rgba(0,0,0,0.15)" />
-      <polygon points="14,58 110,18 206,58" fill={BRAND_SOIL} />
-      <polygon points="14,58 110,18 110,26 22,60" fill="#B4834F" />
-      <rect x="24" y="58" width="172" height="66" rx="4" fill="#3B7A48" />
-      <rect x="24" y="58" width="172" height="10" fill="#4C8E58" />
+    <svg viewBox="0 0 200 110" className="h-full w-full">
+      <ellipse cx="100" cy="100" rx="92" ry="6" fill="rgba(0,0,0,0.18)" />
+      <rect x="6" y="78" width="184" height="8" rx="2" fill="#1c241a" />
+      {c.kind === "box" && (<g><rect x="8" y="26" width="128" height="52" rx="4" fill={c.body} /><rect x="8" y="26" width="128" height="8" rx="3" fill={c.light} />{[0,1,2,3,4].map(i=><rect key={i} x={22+i*24} y="40" width="2" height="34" fill="#000" fillOpacity="0.12"/>)}</g>)}
+      {c.kind === "dump" && (<g><path d="M8 36 L136 22 L136 70 L8 78 Z" fill={c.body} /><path d="M8 36 L136 22 L136 30 L8 44 Z" fill={c.light} /><rect x="8" y="70" width="128" height="8" fill="#1c241a" /></g>)}
+      {c.kind === "semi" && (<g><rect x="4" y="24" width="132" height="54" rx="3" fill={c.body} /><rect x="4" y="52" width="132" height="8" fill={c.stripe} />{[0,1,2].map(i=><rect key={i} x={124-i*4} y="26" width="1.5" height="50" fill="#000" fillOpacity="0.15"/>)}</g>)}
+      {c.kind === "tanker" && (<g><rect x="8" y="30" width="128" height="46" rx="23" fill={c.body} /><rect x="8" y="38" width="128" height="8" rx="4" fill={c.light} /><rect x="60" y="24" width="14" height="8" rx="3" fill={c.stripe} /></g>)}
+      <path d="M138 44 H166 L186 66 V88 H138 Z" fill={c.cab} />
+      <path d="M146 50 H164 L176 65 H146 Z" fill="#BFE0E6" fillOpacity="0.85" />
+      <rect x="184" y="74" width="6" height="6" rx="1.5" fill={BRAND_AMBER} />
+      {c.exhaust && <rect x="132" y="20" width="4" height="30" rx="1.5" fill="#262b23" />}
+      {wheels.map((x) => <Wheel key={x} x={x} y={88} r={12} />)}
+    </svg>
+  );
+}
+
+function WarehouseArt({ c }) {
+  const base = (
+    <g><ellipse cx="110" cy="126" rx="98" ry="7" fill="rgba(0,0,0,0.15)" /></g>
+  );
+  if (c.kind === "silo") return (
+    <svg viewBox="0 0 220 140" className="h-full w-full">{base}
+      <rect x="14" y="70" width="108" height="54" rx="3" fill={c.wall} />
+      <polygon points="8,72 68,44 128,72" fill={c.roof} />
+      <rect x="52" y="92" width="32" height="32" rx="2" fill="#1c241a" />
+      {[0, 1, 2].map((i) => (<g key={i}>
+        <rect x={134 + i * 27} y="40" width="22" height="84" fill={c.silo} />
+        <ellipse cx={145 + i * 27} cy="40" rx="11" ry="5" fill={c.light} />
+        <rect x={134 + i * 27} y="70" width="22" height="3" fill="#000" fillOpacity="0.15" />
+        <rect x={134 + i * 27} y="96" width="22" height="3" fill="#000" fillOpacity="0.15" />
+      </g>))}
+    </svg>
+  );
+  if (c.kind === "cold") return (
+    <svg viewBox="0 0 220 140" className="h-full w-full">{base}
+      <rect x="18" y="56" width="184" height="68" rx="4" fill={c.wall} />
+      <rect x="18" y="56" width="184" height="8" fill={c.roof} />
+      <rect x="18" y="82" width="184" height="6" fill={c.accent} />
+      {[0, 1, 2].map((i) => (<g key={i}><rect x={40 + i * 50} y="40" width="28" height="16" rx="2" fill="#B8C4CC" /><circle cx={54 + i * 50} cy="48" r="5" fill="#8794A0" /></g>))}
+      {[0, 1].map((i) => <rect key={i} x={50 + i * 70} y="96" width="44" height="28" rx="2" fill="#5F7482" />)}
+      <path d="M155 100 l10 10 M165 100 l-10 10 M160 98 v14" stroke="#DCEBF5" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+  if (c.kind === "grain") return (
+    <svg viewBox="0 0 220 140" className="h-full w-full">{base}
+      <rect x="16" y="86" width="150" height="38" rx="3" fill={c.wall} />
+      <polygon points="12,88 91,66 170,88" fill={c.roof} />
+      <rect x="160" y="24" width="30" height="100" fill={c.silo} />
+      <rect x="156" y="16" width="38" height="12" rx="3" fill={c.roof} />
+      <rect x="160" y="60" width="30" height="3" fill="#000" fillOpacity="0.15" />
+      <path d="M160 36 L100 74" stroke="#3a3a34" strokeWidth="5" strokeLinecap="round" />
+      {[0, 1, 2].map((i) => <rect key={i} x={30 + i * 42} y="100" width="30" height="24" rx="2" fill="#1c241a" />)}
+      <path d="M198 124 q-6 -22 0 -40 q6 18 0 40" fill={c.accent} />
+    </svg>
+  );
+  return (
+    <svg viewBox="0 0 220 140" className="h-full w-full">{base}
+      <polygon points="14,58 110,18 206,58" fill={c.roof} />
+      <polygon points="14,58 110,18 110,26 22,60" fill={c.light} />
+      <rect x="24" y="58" width="172" height="66" rx="4" fill={c.wall} />
+      <rect x="24" y="58" width="172" height="10" fill={c.light} />
       {[0, 1, 2, 3].map((i) => <rect key={i} x={40 + i * 40} y="70" width="20" height="14" rx="2" fill="#BFE0E6" fillOpacity="0.85" />)}
       <rect x="78" y="90" width="64" height="34" rx="3" fill="#1c241a" />
       {[0, 1, 2, 3, 4].map((i) => <rect key={i} x="78" y={92 + i * 6.5} width="64" height="2.4" fill="#333d2f" />)}
-      <rect x="152" y="104" width="16" height="16" rx="2" fill={BRAND_AMBER} />
-      <rect x="169" y="108" width="14" height="12" rx="2" fill="#c8862e" />
+      <rect x="152" y="104" width="16" height="16" rx="2" fill={c.accent} />
+      <rect x="169" y="108" width="14" height="12" rx="2" fill={c.accent} fillOpacity="0.7" />
     </svg>
   );
 }
 
-function VisualPanel({ children, badge, dimmed, photoUrl }) {
+const DEFAULT_SKY = "linear-gradient(180deg, #DCE9DA 0%, #C7DCC6 100%)";
+
+function VisualPanel({ children, badge, dimmed, photoUrl, sky }) {
   const [imgError, setImgError] = useState(false);
   const showPhoto = !!photoUrl && !imgError;
   return (
-    <div className="relative flex h-36 items-center justify-center overflow-hidden rounded-2xl" style={!showPhoto ? { backgroundImage: "linear-gradient(180deg, #DCE9DA 0%, #C7DCC6 100%)" } : undefined}>
+    <div className="relative flex h-36 items-center justify-center overflow-hidden rounded-2xl" style={!showPhoto ? { backgroundImage: sky || DEFAULT_SKY } : undefined}>
       {showPhoto ? (
         <img src={photoUrl} alt={badge} loading="lazy" onError={() => setImgError(true)} className="absolute inset-0 h-full w-full object-cover" />
       ) : (
         <>
           <div className="absolute -left-8 -top-8 h-28 w-28 rounded-full bg-white/25" />
-          <div className="h-28 w-full px-4">{children}</div>
+          <div className="absolute inset-x-0 bottom-0 h-7" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+          <div className="relative h-28 w-full px-4">{children}</div>
         </>
       )}
       {showPhoto && <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />}
@@ -249,11 +323,11 @@ function VisualPanel({ children, badge, dimmed, photoUrl }) {
   );
 }
 
-function MachineVisual({ type, available }) {
-  const isTraktor = type === "traktor";
+function MachineVisual({ machine }) {
+  const isTraktor = machine.type === "traktor";
   return (
-    <VisualPanel badge={isTraktor ? "Traktor" : "Kombayn"} dimmed={!available} photoUrl={isTraktor ? IMG_TRACTOR : IMG_COMBINE}>
-      {isTraktor ? <TractorArt /> : <CombineArt />}
+    <VisualPanel badge={isTraktor ? "Traktor" : "Kombayn"} dimmed={!machine.available} photoUrl={machine.photo} sky={machine.art.sky}>
+      {isTraktor ? <TractorArt c={machine.art} /> : <CombineArt c={machine.art} />}
     </VisualPanel>
   );
 }
@@ -286,7 +360,7 @@ function RentalPage({ t, showToast, addHistory }) {
         {MACHINES.map((m) => (
           <button key={m.id} onClick={() => openMachine(m)}
             className={`text-left rounded-2xl border ${t.cardBorder} ${t.card} p-3 transition-transform active:scale-[0.98] ${!m.available ? "opacity-70" : ""}`}>
-            <MachineVisual type={m.type} available={m.available} />
+            <MachineVisual machine={m} />
             <div className="mt-3 flex items-start justify-between gap-2">
               <div>
                 <h3 className={`text-base font-semibold ${t.text}`}>{m.name}</h3>
@@ -311,7 +385,7 @@ function RentalPage({ t, showToast, addHistory }) {
             </div>
             <button onClick={() => setSelected(null)} className={`rounded-full p-1.5 ${t.chip}`} aria-label="Yopish"><Icon name="X" size={18} className={t.text} /></button>
           </div>
-          <div className="mt-4"><MachineVisual type={selected.type} available={selected.available} /></div>
+          <div className="mt-4"><MachineVisual machine={selected} /></div>
           <div className="mt-5">
             <label className={`mb-2 block text-sm font-medium ${t.text}`}>Necha kunga olasiz?</label>
             <div className={`flex items-center gap-3 rounded-2xl border ${t.cardBorder} ${t.inputBg} px-4 py-3`}>
@@ -361,16 +435,16 @@ function RentalPage({ t, showToast, addHistory }) {
 }
 
 /* --------------------------------- Page 2 --------------------------------- */
-function DriverThumb() {
+function DriverThumb({ d }) {
   const [imgError, setImgError] = useState(false);
-  if (imgError) {
-    return (
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ backgroundColor: BRAND_SOIL + "22" }}>
-        <Icon name="Truck" size={24} color={BRAND_SOIL} />
-      </div>
-    );
+  if (d.photo && !imgError) {
+    return <img src={d.photo} alt={d.vehicleModel} loading="lazy" onError={() => setImgError(true)} className="h-14 w-20 rounded-xl object-cover" />;
   }
-  return <img src={IMG_TRUCK} alt="Yuk mashinasi" loading="lazy" onError={() => setImgError(true)} className="h-12 w-12 rounded-xl object-cover" />;
+  return (
+    <div className="flex h-14 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl px-1" style={{ backgroundImage: d.art.sky }}>
+      <TruckArt c={d.art} />
+    </div>
+  );
 }
 
 function LogisticsPage({ t, showToast, addHistory }) {
@@ -424,7 +498,7 @@ function LogisticsPage({ t, showToast, addHistory }) {
                 <div key={d.id} className={`ferdo-anim rounded-2xl border ${t.cardBorder} ${t.card} p-4`} style={{ animation: `ferdoSlideUp 0.35s ease-out both`, animationDelay: `${i * 70}ms` }}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <DriverThumb />
+                      <DriverThumb d={d} />
                       <div>
                         <h3 className={`text-sm font-semibold ${t.text}`}>{d.vehicleModel}</h3>
                         <p className={`text-xs ${t.subtext}`}>{d.driverName}</p>
@@ -457,7 +531,8 @@ function LogisticsPage({ t, showToast, addHistory }) {
             <h2 className={`text-lg font-bold ${t.text}`}>{contact.driverName}</h2>
             <button onClick={() => setContact(null)} className={`rounded-full p-1.5 ${t.chip}`}><Icon name="X" size={18} className={t.text} /></button>
           </div>
-          <p className={`mt-1 text-sm ${t.subtext}`}>{contact.vehicleModel} · <Stars rating={contact.rating} /> ({contact.ratingsCount} baho)</p>
+          <div className="mt-3 h-36 overflow-hidden rounded-2xl px-4" style={{ backgroundImage: contact.art.sky }}><TruckArt c={contact.art} /></div>
+          <p className={`mt-3 text-sm ${t.subtext}`}>{contact.vehicleModel} · <Stars rating={contact.rating} /> ({contact.ratingsCount} baho)</p>
           <div className={`mt-4 flex items-center gap-3 rounded-2xl ${t.inputBg} px-4 py-3.5`}>
             <Icon name="Phone" size={18} color={BRAND_GREEN} />
             <span className={`text-base font-semibold ${t.text}`}>{contact.phone}</span>
@@ -509,7 +584,7 @@ function WarehousePage({ t, showToast, addHistory }) {
           const pct = Math.round((w.freeCapacity / w.totalCapacity) * 100);
           return (
             <div key={w.id} className={`rounded-2xl border ${t.cardBorder} ${t.card} p-3`}>
-              <VisualPanel badge={`${w.distanceKm} km`} photoUrl={WAREHOUSE_IMAGES[w.id]}><WarehouseArt /></VisualPanel>
+              <VisualPanel badge={`${w.distanceKm} km`} photoUrl={w.photo} sky={w.art.sky}><WarehouseArt c={w.art} /></VisualPanel>
               <div className="mt-3 flex items-start justify-between gap-2">
                 <div>
                   <h3 className={`text-base font-semibold ${t.text}`}>{w.name}</h3>
